@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  RIDER
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customerOrders Order[] @relation("CustomerOrders")
+  riderOrders    Order[] @relation("RiderOrders")
+}
+
+model Order {
+  id                 String      @id @default(uuid())
+  pickupLocation     String
+  dropoffLocation    String
+  receiverName       String
+  receiverContact    String
+  packageDescription String?
+  status             OrderStatus @default(PENDING)
+  price              Float
+  distance           Float?
+
+  customerId String
+  customer   User   @relation("CustomerOrders", fields: [customerId], references: [id])
+
+  riderId String?
+  rider   User?   @relation("RiderOrders", fields: [riderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PricingConfig {
+  id                String   @id @default(uuid())
+  baseRate          Float    @default(5.0)
+  perKmRate         Float    @default(1.5)
+  expressMultiplier Float    @default(1.5)
+  updatedAt         DateTime @updatedAt
+}
