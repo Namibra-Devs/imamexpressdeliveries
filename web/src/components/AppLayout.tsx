@@ -12,6 +12,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
+  const isAuthPage = ['/login', '/register'].includes(window.location.pathname);
+
   return (
     <div className="app-shell-wrapper">
       {/* Top Navigation Bar - Solid Variant */}
@@ -46,13 +48,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
         </div>
       </header>
 
-      <div className="app-shell">
+      <div className={`app-shell ${isAuthPage ? 'auth-shell' : ''}`}>
         <div className="app-sidebar">
           
           <div className="app-sidebar-content">
             {leftContent}
             
-            {!isAuthenticated && (
+            {!isAuthenticated && !['/login', '/register'].includes(window.location.pathname) && (
               <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <button 
                   className="btn btn-primary" 

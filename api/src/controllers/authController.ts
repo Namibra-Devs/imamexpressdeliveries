@@ -5,7 +5,7 @@ import prisma from '../prisma';
 
 export const register = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { email, password, name, phone, role } = req.body;
+    const { email, password, name, phone, role, homeAddress, workAddress } = req.body;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -20,6 +20,8 @@ export const register = async (req: Request, res: Response): Promise<any> => {
         password: hashedPassword,
         name,
         phone,
+        homeAddress,
+        workAddress,
         role: role || 'CUSTOMER',
       },
     });

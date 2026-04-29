@@ -30,6 +30,8 @@ model User {
   password  String
   name      String
   phone     String?
+  homeAddress String?
+  workAddress String?
   profileImage String?
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())

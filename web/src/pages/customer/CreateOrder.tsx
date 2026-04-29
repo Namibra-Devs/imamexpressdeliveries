@@ -234,7 +234,7 @@ const CreateOrder: React.FC = () => {
                   flex: '0 0 auto',
                   width: '100px',
                   height: '110px',
-                  background: formData.packageType === pkg.id ? '#1a1625' : '#0a0612',
+                  background: formData.packageType === pkg.id ? '#3d1c36' : 'var(--bg-sidebar)',
                   border: formData.packageType === pkg.id ? '2px solid var(--primary)' : '1px solid rgba(160, 32, 240, 0.1)',
                   borderRadius: '1.25rem',
                   display: 'flex',

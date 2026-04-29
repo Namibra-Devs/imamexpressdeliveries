@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import RegisterSuccess from './pages/auth/RegisterSuccess';
 import CreateOrder from './pages/customer/CreateOrder';
 import OrderHistory from './pages/customer/OrderHistory';
 import Dashboard from './pages/admin/Dashboard';
@@ -48,6 +49,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/register-success" element={<RegisterSuccess />} />
       
       {/* Customer Routes */}
       <Route path="/customer/*" element={

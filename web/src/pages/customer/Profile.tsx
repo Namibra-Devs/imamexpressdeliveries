@@ -242,11 +242,11 @@ const Profile: React.FC = () => {
           {/* Account Details Section */}
           <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '2rem' }}>
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-              <div style={{ flex: 1, background: '#1a1625', padding: '1rem', borderRadius: '1rem' }}>
+              <div style={{ flex: 1, background: '#3d1c36', padding: '1rem', borderRadius: '1rem' }}>
                 <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Account Status</p>
                 <p style={{ fontWeight: 600, color: '#A020F0', fontSize: '0.875rem' }}>Verified & Active</p>
               </div>
-              <div style={{ flex: 1, background: '#1a1625', padding: '1rem', borderRadius: '1rem' }}>
+              <div style={{ flex: 1, background: '#3d1c36', padding: '1rem', borderRadius: '1rem' }}>
                 <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member Since</p>
                 <p style={{ fontWeight: 600, color: '#fff', fontSize: '0.875rem' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
               </div>

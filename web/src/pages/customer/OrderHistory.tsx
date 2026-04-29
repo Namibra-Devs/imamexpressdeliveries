@@ -92,8 +92,8 @@ const OrderHistory: React.FC = () => {
               key={order.id} 
               onClick={() => handleOrderClick(order)}
               style={{ 
-                background: selectedOrder?.id === order.id ? '#1a1625' : '#0a0612', 
-                border: selectedOrder?.id === order.id ? '1px solid var(--primary)' : '1px solid #1a1625', 
+                background: selectedOrder?.id === order.id ? '#3d1c36' : 'var(--bg-sidebar)', 
+                border: selectedOrder?.id === order.id ? '1px solid var(--primary)' : '1px solid #3d1c36', 
                 borderRadius: '1rem', 
                 padding: '1.25rem',
                 cursor: 'pointer',
@@ -123,7 +123,7 @@ const OrderHistory: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #1a1625', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #3d1c36', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>person</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{order.receiverName}</span>
