@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import AppLayout from '../../components/AppLayout';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', role: 'CUSTOMER' });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,13 +16,13 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       await axios.post('http://localhost:5000/api/auth/register', formData);
+      toast.success('Registration successful! Please sign in.');
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Try again.');
+      toast.error(err.response?.data?.message || 'Registration failed. Try again.');
     } finally {
       setLoading(false);
     }
@@ -32,12 +32,6 @@ const Register: React.FC = () => {
     <div>
       <h2 className="text-gradient" style={{ marginBottom: '2rem', fontSize: '2rem' }}>Create Account</h2>
       
-      {error && (
-        <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#FCA5A5', padding: '0.75rem', borderRadius: '0.375rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="input-group" style={{ flex: 1 }}>

@@ -11,6 +11,7 @@ export const getProfile = async (req: Request, res: Response) => {
         email: true,
         name: true,
         phone: true,
+        profileImage: true,
         role: true,
         createdAt: true
       }
@@ -29,20 +30,22 @@ export const getProfile = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.userId;
-    const { name, phone, email } = req.body;
+    const { name, phone, email, profileImage } = req.body;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         name,
         phone,
-        email
+        email,
+        profileImage
       },
       select: {
         id: true,
         email: true,
         name: true,
         phone: true,
+        profileImage: true,
         role: true
       }
     });

@@ -32,6 +32,8 @@ const Home = () => (
   } />
 );
 
+import { Toaster } from 'react-hot-toast';
+
 const App: React.FC = () => {
   const { isLoading } = useAuth();
 
@@ -40,7 +42,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <Routes>
+    <>
+      <Toaster position="top-right" />
+      <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -79,6 +83,7 @@ const App: React.FC = () => {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
 

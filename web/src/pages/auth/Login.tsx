@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import AppLayout from '../../components/AppLayout';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -15,18 +15,18 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
       login(response.data.user, response.data.token);
+      toast.success(`Welcome back, ${response.data.user.name}!`);
       
       if (response.data.user.role === 'ADMIN') navigate('/admin');
       else if (response.data.user.role === 'RIDER') navigate('/rider');
       else navigate('/customer');
       
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
+      toast.error(err.response?.data?.message || 'Failed to login. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -36,12 +36,6 @@ const Login: React.FC = () => {
     <div>
       <h2 className="text-gradient" style={{ marginBottom: '2rem', fontSize: '2rem' }}>Welcome Back</h2>
       
-      {error && (
-        <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#FCA5A5', padding: '0.75rem', borderRadius: '0.375rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
-          {error}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <label className="input-label" style={{ color: '#fff' }}>Email Address</label>

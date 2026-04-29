@@ -31,8 +31,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
           </button>
           
           {isAuthenticated && (
-            <div className="header-profile-pic" onClick={() => navigate('/customer/profile')}>
-              {user?.name?.charAt(0).toUpperCase() || 'U'}
+            <div 
+              className="header-profile-pic" 
+              onClick={() => navigate('/customer/profile')}
+              style={{ 
+                background: user?.profileImage ? `url(${user.profileImage}) center/cover` : 'var(--primary)',
+                overflow: 'hidden'
+              }}
+            >
+              {!user?.profileImage && (user?.name?.charAt(0).toUpperCase() || 'U')}
             </div>
           )}
         </div>

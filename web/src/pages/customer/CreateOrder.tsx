@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { useLoadScript, Autocomplete, GoogleMap, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import toast from 'react-hot-toast';
 import AppLayout from '../../components/AppLayout';
 
 const libraries: ("places")[] = ["places"];
@@ -46,8 +47,6 @@ const CreateOrder: React.FC = () => {
   const [priceEstimate, setPriceEstimate] = useState<number | null>(null);
   const [distanceEstimate, setDistanceEstimate] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   const pickupAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -127,8 +126,6 @@ const CreateOrder: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess(false);
 
     try {
       // Combine package type and description for the backend
@@ -137,20 +134,25 @@ const CreateOrder: React.FC = () => {
         packageDescription: `${formData.packageType.toUpperCase()}: ${formData.packageDescription}`
       };
 
-      await axios.post('http://localhost:5000/api/orders', payload, {
+      const orderPromise = axios.post('http://localhost:5000/api/orders', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSuccess(true);
-      setFormData({
-        pickupLocation: '', dropoffLocation: '', receiverName: '', receiverContact: '', packageDescription: '', packageType: 'documents'
+
+      toast.promise(orderPromise, {
+        loading: 'Creating your order...',
+        success: () => {
+          setFormData({
+            pickupLocation: '', dropoffLocation: '', receiverName: '', receiverContact: '', packageDescription: '', packageType: 'documents'
+          });
+          setPriceEstimate(null);
+          setDistanceEstimate(null);
+          setDirections(null);
+          return 'Order created successfully!';
+        },
+        error: (err) => err.response?.data?.message || 'Failed to create order'
       });
-      setPriceEstimate(null);
-      setDistanceEstimate(null);
-      setDirections(null);
     } catch (err: any) {
-      const backendError = err.response?.data?.error;
-      const message = err.response?.data?.message || 'Failed to create order';
-      setError(backendError ? `${message}: ${backendError}` : message);
+      // Handled by toast.promise
     } finally {
       setLoading(false);
     }
@@ -163,18 +165,6 @@ const CreateOrder: React.FC = () => {
       {loadError && (
         <div style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#FCD34D', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
           Warning: Google Maps failed to load. Auto-complete will be disabled.
-        </div>
-      )}
-
-      {success && (
-        <div style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#6EE7B7', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
-          Request submitted! A rider will be assigned.
-        </div>
-      )}
-
-      {error && (
-        <div style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#FCA5A5', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
-          {error}
         </div>
       )}
 

@@ -1,30 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import AppLayout from '../../components/AppLayout';
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%'
+};
+
+const defaultCenter = { lat: 5.6037, lng: -0.1870 }; // Accra default
+
+const mapOptions = {
+  styles: [{ elementType: "geometry", stylers: [{ color: "#f5f5f5" }] }, { elementType: "labels.icon", stylers: [{ visibility: "off" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] }, { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] }, { featureType: "poi", elementType: "geometry", stylers: [{ color: "#eeeeee" }] }, { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] }, { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] }, { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] }, { featureType: "road.arterial", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] }, { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] }, { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] }, { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }, { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] }, { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#eeeeee" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9c9c9" }] }, { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }],
+  disableDefaultUI: true,
+  zoomControl: true,
+};
 
 const Profile: React.FC = () => {
   const { token, user: authUser, login } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
+  });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    profileImage: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
 
   useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        () => {
+          console.log("Error getting location, using default");
+        }
+      );
+    }
+
     const fetchProfile = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/user/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const { name, email, phone } = res.data.user;
-        setFormData({ name, email, phone: phone || '' });
+        const { name, email, phone, profileImage } = res.data.user;
+        setFormData({ name, email, phone: phone || '', profileImage: profileImage || '' });
       } catch (err) {
         console.error('Failed to fetch profile:', err);
-        setMessage({ type: 'error', text: 'Failed to load profile details.' });
+        toast.error('Failed to load profile details.');
       } finally {
         setLoading(false);
       }
@@ -39,27 +74,60 @@ const Profile: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        setFormData({ ...formData, profileImage: base64 });
+        
+        // Immediate upload
+        const uploadPromise = axios.put('http://localhost:5000/api/user/profile', 
+          { ...formData, profileImage: base64 }, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        toast.promise(uploadPromise, {
+          loading: 'Uploading profile picture...',
+          success: (res) => {
+            if (authUser) {
+              login(res.data.user, token!);
+            }
+            return 'Profile picture updated successfully!';
+          },
+          error: (err) => err.response?.data?.message || 'Failed to upload profile picture.'
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage({ type: '', text: '' });
 
     try {
-      const res = await axios.put('http://localhost:5000/api/user/profile', formData, {
+      const updatePromise = axios.put('http://localhost:5000/api/user/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
-      // Update the local auth context if the user details changed
-      if (authUser) {
-        login(res.data.user, token!);
-      }
-
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
-    } catch (err: any) {
-      setMessage({
-        type: 'error',
-        text: err.response?.data?.message || 'Failed to update profile.'
+      
+      toast.promise(updatePromise, {
+        loading: 'Saving profile changes...',
+        success: (res) => {
+          if (authUser) {
+            login(res.data.user, token!);
+          }
+          return 'Profile updated successfully!';
+        },
+        error: (err) => err.response?.data?.message || 'Failed to update profile.'
       });
+    } catch (err: any) {
+      // toast.promise handles the error but we still catch to stop loading state
     } finally {
       setSaving(false);
     }
@@ -68,117 +136,146 @@ const Profile: React.FC = () => {
   const leftContent = (
     <div>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', marginTop: '0.8rem', color: '#fff' }}>My Profile</h2>
-
+      
       {loading ? (
         <div className="text-center text-muted" style={{ padding: '2rem' }}>Loading details...</div>
       ) : (
-        <form onSubmit={handleSubmit}>
-          {message.text && (
-            <div style={{
-              background: message.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-              color: message.type === 'success' ? '#6EE7B7' : '#FCA5A5',
-              padding: '1rem',
-              borderRadius: '0.375rem',
-              marginBottom: '1.5rem',
-              fontSize: '0.875rem'
+        <div>
+          {/* Profile Picture Section */}
+          <div style={{ position: 'relative', marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              style={{ display: 'none' }} 
+              accept="image/*" 
+              onChange={handleFileChange}
+            />
+            <div style={{ 
+              width: '100px', 
+              height: '100px', 
+              background: formData.profileImage ? `url(${formData.profileImage}) center/cover` : 'var(--primary)', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '2.5rem',
+              color: '#fff',
+              boxShadow: '0 10px 25px rgba(210, 74, 61, 0.2)',
+              overflow: 'hidden'
             }}>
-              {message.text}
+              {!formData.profileImage && (formData.name.charAt(0).toUpperCase() || 'U')}
             </div>
-          )}
-
-          <div className="input-group">
-            <label className="input-label" style={{ color: '#fff' }}>Full Name</label>
-            <input
-              type="text"
-              className="input-field"
-              style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            <button 
+              type="button"
+              onClick={handleFileClick}
+              style={{ 
+                position: 'absolute', 
+                bottom: '0', 
+                right: 'calc(50% - 50px)', 
+                background: '#fff', 
+                color: '#111', 
+                border: 'none', 
+                borderRadius: '50%', 
+                width: '32px', 
+                height: '32px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                zIndex: 2
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>photo_camera</span>
+            </button>
           </div>
 
-          <div className="input-group">
-            <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
-            <input
-              type="email"
-              className="input-field"
-              style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
-              name="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label className="input-label" style={{ color: '#fff' }}>Full Name</label>
+              <input
+                type="text"
+                className="input-field"
+                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
+                name="name"
+                placeholder="Your Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <div className="input-group">
-            <label className="input-label" style={{ color: '#fff' }}>Phone Number</label>
-            <input
-              type="text"
-              className="input-field"
-              style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
-              name="phone"
-              placeholder="+1234567890"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-          </div>
+            <div className="input-group">
+              <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
+              <input
+                type="email"
+                className="input-field"
+                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
+                name="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{ width: '100%', marginTop: '1.5rem', borderRadius: '2rem', padding: '1rem' }}
-            disabled={saving}
-          >
-            {saving ? 'Saving Changes...' : 'Update Profile'}
-          </button>
-        </form>
+            <div className="input-group">
+              <label className="input-label" style={{ color: '#fff' }}>Phone Number</label>
+              <input
+                type="text"
+                className="input-field"
+                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
+                name="phone"
+                placeholder="+1234567890"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: '1.5rem', borderRadius: '2rem', padding: '1rem' }}
+              disabled={saving}
+            >
+              {saving ? 'Saving Changes...' : 'Update Profile'}
+            </button>
+          </form>
+
+          {/* Account Details Section */}
+          <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '1rem' }}>
+                <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Account Status</p>
+                <p style={{ fontWeight: 600, color: '#10b981', fontSize: '0.875rem' }}>Verified & Active</p>
+              </div>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '1rem' }}>
+                <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member Since</p>
+                <p style={{ fontWeight: 600, color: '#fff', fontSize: '0.875rem' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 
   const rightContent = (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f8fafc',
-      flexDirection: 'column',
-      padding: '2rem'
-    }}>
-      <div style={{
-        width: '120px',
-        height: '120px',
-        background: 'var(--primary)',
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '3rem',
-        color: '#fff',
-        marginBottom: '1.5rem',
-        boxShadow: '0 10px 25px rgba(210, 74, 61, 0.2)'
-      }}>
-        {formData.name.charAt(0).toUpperCase() || 'U'}
-      </div>
-      <h2 style={{ color: '#1e293b', marginBottom: '0.5rem' }}>{formData.name || 'Your Name'}</h2>
-      <p style={{ color: '#64748b', fontSize: '1rem' }}>{authUser?.role} Account</p>
-
-      <div style={{ marginTop: '3rem', width: '100%', maxWidth: '400px' }}>
-        <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', marginBottom: '1rem' }}>
-          <p style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Account Status</p>
-          <p style={{ fontWeight: 600, color: '#10b981' }}>Verified & Active</p>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={userLocation || defaultCenter}
+          zoom={14}
+          options={mapOptions}
+        >
+          {userLocation && <Marker position={userLocation} />}
+        </GoogleMap>
+      ) : (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' }}>
+          Loading Map...
         </div>
-        <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-          <p style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Member Since</p>
-          <p style={{ fontWeight: 600, color: '#1e293b' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 
