@@ -160,8 +160,8 @@ const Profile: React.FC = () => {
               justifyContent: 'center',
               fontSize: '2.5rem',
               color: '#fff',
-              boxShadow: '0 10px 25px rgba(210, 74, 61, 0.2)',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              border: '4px solid #1a1625'
             }}>
               {!formData.profileImage && (formData.name.charAt(0).toUpperCase() || 'U')}
             </div>
@@ -196,7 +196,6 @@ const Profile: React.FC = () => {
               <input
                 type="text"
                 className="input-field"
-                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
                 name="name"
                 placeholder="Your Name"
                 value={formData.name}
@@ -210,7 +209,6 @@ const Profile: React.FC = () => {
               <input
                 type="email"
                 className="input-field"
-                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
                 name="email"
                 placeholder="your@email.com"
                 value={formData.email}
@@ -224,7 +222,6 @@ const Profile: React.FC = () => {
               <input
                 type="text"
                 className="input-field"
-                style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.1)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
                 name="phone"
                 placeholder="+1234567890"
                 value={formData.phone}
@@ -243,13 +240,13 @@ const Profile: React.FC = () => {
           </form>
 
           {/* Account Details Section */}
-          <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+          <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '2rem' }}>
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-              <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '1rem' }}>
+              <div style={{ flex: 1, background: '#1a1625', padding: '1rem', borderRadius: '1rem' }}>
                 <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Account Status</p>
-                <p style={{ fontWeight: 600, color: '#10b981', fontSize: '0.875rem' }}>Verified & Active</p>
+                <p style={{ fontWeight: 600, color: '#A020F0', fontSize: '0.875rem' }}>Verified & Active</p>
               </div>
-              <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '1rem' }}>
+              <div style={{ flex: 1, background: '#1a1625', padding: '1rem', borderRadius: '1rem' }}>
                 <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member Since</p>
                 <p style={{ fontWeight: 600, color: '#fff', fontSize: '0.875rem' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
               </div>

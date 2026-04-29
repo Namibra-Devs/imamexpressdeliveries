@@ -42,7 +42,6 @@ const Login: React.FC = () => {
           <input 
             type="email" 
             className="input-field" 
-            style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -55,7 +54,6 @@ const Login: React.FC = () => {
           <input 
             type="password" 
             className="input-field" 
-            style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }}
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

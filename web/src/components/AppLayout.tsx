@@ -14,19 +14,19 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
 
   return (
     <div className="app-shell-wrapper">
-      {/* Top Navigation Bar */}
+      {/* Top Navigation Bar - Solid Variant */}
       <header className="top-header">
         <div className="top-header-left" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          <div style={{ background: 'var(--primary)', color: 'white', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center' }}>
-            <span className="material-symbols-outlined">local_shipping</span>
+          <div style={{ background: 'var(--primary)', color: 'white', padding: '0.6rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', boxShadow: '0 4px 12px rgba(160, 32, 240, 0.3)' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '1.75rem' }}>local_shipping</span>
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.025em' }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--bg-darker)', margin: 0, letterSpacing: '-0.03em' }}>
             Imam Express
           </h1>
         </div>
         
         <div className="top-header-right">
-          <button className="theme-toggle">
+          <button className="theme-toggle" style={{ background: '#ffffff', border: '1px solid #eee', color: '#0a0612' }}>
             <span className="material-symbols-outlined">dark_mode</span>
           </button>
           
@@ -36,6 +36,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
               onClick={() => navigate('/customer/profile')}
               style={{ 
                 background: user?.profileImage ? `url(${user.profileImage}) center/cover` : 'var(--primary)',
+                border: '2px solid #fff',
                 overflow: 'hidden'
               }}
             >

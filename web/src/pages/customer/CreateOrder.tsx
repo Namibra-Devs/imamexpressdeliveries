@@ -163,22 +163,22 @@ const CreateOrder: React.FC = () => {
       <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', marginTop: '5px', color: '#fff' }}>Delivery Details</h2>
 
       {loadError && (
-        <div style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#FCD34D', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
+        <div style={{ background: '#5b21b6', color: '#ede9fe', padding: '1rem', borderRadius: '0.75rem', marginBottom: '1.5rem' }}>
           Warning: Google Maps failed to load. Auto-complete will be disabled.
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
         <div style={{ position: 'relative', paddingLeft: '1.5rem', marginBottom: '2rem' }}>
-          <div style={{ position: 'absolute', left: '0', top: '24px', bottom: '30px', borderLeft: '2px dashed rgba(255,255,255,0.2)' }}></div>
+          <div style={{ position: 'absolute', left: '0', top: '24px', bottom: '30px', borderLeft: '2px dashed rgba(160, 32, 240, 0.3)' }}></div>
           <div style={{ position: 'absolute', left: '-4px', top: '24px', width: '10px', height: '10px', background: '#fff', borderRadius: '50%' }}></div>
-          <div style={{ position: 'absolute', left: '-4px', bottom: '30px', width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%', boxShadow: '0 0 10px var(--primary)' }}></div>
+          <div style={{ position: 'absolute', left: '-4px', bottom: '30px', width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%' }}></div>
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pick up Location</label>
             {isLoaded ? (
               <Autocomplete onLoad={(autoC) => pickupAutocompleteRef.current = autoC} onPlaceChanged={onPickupPlaceChanged}>
-                <input type="text" className="input-field" style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.1)', borderRadius: 0, paddingLeft: 0, paddingRight: 0 }} name="pickupLocation" placeholder="Search pickup address" value={formData.pickupLocation} onChange={handleChange} required />
+                <input type="text" className="input-field" name="pickupLocation" placeholder="Search pickup address" value={formData.pickupLocation} onChange={handleChange} required />
               </Autocomplete>
             ) : (
               <input type="text" className="input-field" name="pickupLocation" placeholder="Enter pickup address" value={formData.pickupLocation} onChange={handleChange} required />
@@ -189,7 +189,7 @@ const CreateOrder: React.FC = () => {
             <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Drop off Location</label>
             {isLoaded ? (
               <Autocomplete onLoad={(autoC) => dropoffAutocompleteRef.current = autoC} onPlaceChanged={onDropoffPlaceChanged}>
-                <input type="text" className="input-field" style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.1)', borderRadius: 0, paddingLeft: 0, paddingRight: 0 }} name="dropoffLocation" placeholder="Search delivery address" value={formData.dropoffLocation} onChange={handleChange} required />
+                <input type="text" className="input-field" name="dropoffLocation" placeholder="Search delivery address" value={formData.dropoffLocation} onChange={handleChange} required />
               </Autocomplete>
             ) : (
               <input type="text" className="input-field" name="dropoffLocation" placeholder="Enter delivery address" value={formData.dropoffLocation} onChange={handleChange} required />
@@ -234,9 +234,9 @@ const CreateOrder: React.FC = () => {
                   flex: '0 0 auto',
                   width: '100px',
                   height: '110px',
-                  background: formData.packageType === pkg.id ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.2)',
-                  border: formData.packageType === pkg.id ? '1px dashed #fff' : '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: '1rem',
+                  background: formData.packageType === pkg.id ? '#1a1625' : '#0a0612',
+                  border: formData.packageType === pkg.id ? '2px solid var(--primary)' : '1px solid rgba(160, 32, 240, 0.1)',
+                  borderRadius: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -283,7 +283,7 @@ const CreateOrder: React.FC = () => {
             <DirectionsRenderer
               directions={directions}
               options={{
-                polylineOptions: { strokeColor: '#D24A3D', strokeWeight: 4 },
+                polylineOptions: { strokeColor: '#A020F0', strokeWeight: 6 },
                 suppressMarkers: false,
               }}
             />
@@ -318,7 +318,7 @@ const CreateOrder: React.FC = () => {
           <div style={{ width: '1px', height: '30px', background: '#eee' }}></div>
           <div>
             <div style={{ fontSize: '0.75rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Cost</div>
-            <div style={{ fontWeight: 700, fontSize: '1.125rem', color: '#D24A3D' }}>GH₵{priceEstimate.toFixed(2)}</div>
+            <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--primary)' }}>GH₵{priceEstimate.toFixed(2)}</div>
           </div>
         </div>
       )}

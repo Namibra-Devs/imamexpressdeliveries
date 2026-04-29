@@ -36,27 +36,27 @@ const Register: React.FC = () => {
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="input-group" style={{ flex: 1 }}>
             <label className="input-label" style={{ color: '#fff' }}>Full Name</label>
-            <input type="text" className="input-field" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }} name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required />
+            <input type="text" className="input-field" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required />
           </div>
           <div className="input-group" style={{ flex: 1 }}>
             <label className="input-label" style={{ color: '#fff' }}>Phone</label>
-            <input type="text" className="input-field" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }} name="phone" placeholder="+1234567890" value={formData.phone} onChange={handleChange} />
+            <input type="text" className="input-field" name="phone" placeholder="+1234567890" value={formData.phone} onChange={handleChange} />
           </div>
         </div>
 
         <div className="input-group">
           <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
-          <input type="email" className="input-field" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }} name="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} required />
+          <input type="email" className="input-field" name="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} required />
         </div>
         
         <div className="input-group">
           <label className="input-label" style={{ color: '#fff' }}>Password</label>
-          <input type="password" className="input-field" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,255,255,0.2)', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: 0, paddingLeft: 0 }} name="password" placeholder="Create a strong password" value={formData.password} onChange={handleChange} required />
+          <input type="password" className="input-field" name="password" placeholder="Create a strong password" value={formData.password} onChange={handleChange} required />
         </div>
 
         <div className="input-group">
           <label className="input-label" style={{ color: '#fff' }}>Account Type</label>
-          <select className="input-field" name="role" value={formData.role} onChange={handleChange} style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <select className="input-field" name="role" value={formData.role} onChange={handleChange}>
             <option value="CUSTOMER" style={{ color: 'black' }}>Customer</option>
             <option value="RIDER" style={{ color: 'black' }}>Rider</option>
           </select>

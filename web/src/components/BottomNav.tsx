@@ -31,12 +31,12 @@ const BottomNav: React.FC = () => {
               onClick={() => navigate(item.path)}
             >
               <span className="material-symbols-outlined nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
+              {!item.isPrimary && <span className="nav-label">{item.label}</span>}
             </button>
           );
         })}
         
-        <button className="bottom-nav-item" onClick={handleLogout} style={{ color: 'var(--danger)' }}>
+        <button className="bottom-nav-item" onClick={handleLogout} style={{ color: '#ef4444' }}>
           <span className="material-symbols-outlined nav-icon">logout</span>
           <span className="nav-label">Logout</span>
         </button>
