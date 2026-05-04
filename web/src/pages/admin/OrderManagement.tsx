@@ -34,6 +34,44 @@ const mapOptions = {
   styles: [{ elementType: "geometry", stylers: [{ color: "#2b1426" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#a78bfa" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#1e0e1a" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#3d1c36" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#1e0e1a" }] }]
 };
 
+const QuickActionMenu = ({ order, onView, onAssign }: { order: Order, onView: () => void, onAssign: () => void }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ position: 'relative' }}>
+      <button 
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        className="nav-item-hover"
+      >
+        <span className="material-symbols-outlined">more_vert</span>
+      </button>
+      {open && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 90 }} onClick={(e) => { e.stopPropagation(); setOpen(false); }}></div>
+          <div style={{ position: 'absolute', right: 0, top: '100%', background: '#1e0e1a', border: '1px solid rgba(160,32,240,0.2)', borderRadius: '0.5rem', padding: '0.5rem', zIndex: 100, minWidth: '150px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setOpen(false); onView(); }}
+              style={{ width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '0.5rem', color: '#fff', cursor: 'pointer', borderRadius: '0.25rem', fontSize: '0.85rem' }}
+              className="nav-item-hover"
+            >
+              View Details
+            </button>
+            {(order.status === 'PENDING' || order.status === 'ASSIGNED') && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); setOpen(false); onAssign(); }}
+                style={{ width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '0.5rem', color: '#fff', cursor: 'pointer', borderRadius: '0.25rem', fontSize: '0.85rem' }}
+                className="nav-item-hover"
+              >
+                Assign Rider
+              </button>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 const OrderManagement: React.FC = () => {
   const { token } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -151,6 +189,7 @@ const OrderManagement: React.FC = () => {
                   <th style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Status</th>
                   <th style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Rider</th>
                   <th style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', textAlign: 'right' }}>Amount</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', textAlign: 'center' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,6 +235,15 @@ const OrderManagement: React.FC = () => {
                     </td>
                     <td style={{ padding: '1.25rem 1.5rem', fontWeight: 600, textAlign: 'right', fontSize: '0.9rem' }}>
                       GH₵{order.price.toFixed(2)}
+                    </td>
+                    <td style={{ padding: '1.25rem 1.5rem', textAlign: 'center' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <QuickActionMenu 
+                          order={order} 
+                          onView={() => setSelectedOrder(order)} 
+                          onAssign={() => { setSelectedOrder(order); setTimeout(() => { document.getElementById('assignment-box')?.scrollIntoView({ behavior: 'smooth' }); }, 100); }} 
+                        />
+                      </div>
                     </td>
                   </tr>
                 )) : (
@@ -260,7 +308,7 @@ const OrderManagement: React.FC = () => {
               )}
 
               {/* Assignment Box */}
-              <div style={{ background: 'rgba(160, 32, 240, 0.05)', border: '1px solid rgba(160, 32, 240, 0.2)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
+              <div id="assignment-box" style={{ background: 'rgba(160, 32, 240, 0.05)', border: '1px solid rgba(160, 32, 240, 0.2)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
                 <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Rider Assignment</h4>
                 {selectedOrder.status === 'PENDING' || selectedOrder.status === 'ASSIGNED' ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 
 interface Metrics {
   totalDeliveries: number;
@@ -29,11 +30,28 @@ const revenueData = [
   { name: 'Sun', revenue: 1200 },
 ];
 
+const simulatedRiders = [
+  { lat: 5.6137, lng: -0.1970, id: 1 },
+  { lat: 5.5937, lng: -0.1770, id: 2 },
+  { lat: 5.6237, lng: -0.1800, id: 3 },
+  { lat: 5.5800, lng: -0.2000, id: 4 },
+];
+
+const mapOptions = {
+  disableDefaultUI: true,
+  zoomControl: false,
+  styles: [{ elementType: "geometry", stylers: [{ color: "#2b1426" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#a78bfa" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#1e0e1a" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#3d1c36" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#1e0e1a" }] }]
+};
+
 const Dashboard: React.FC = () => {
   const { token } = useAuth();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
+  });
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -200,12 +218,33 @@ const Dashboard: React.FC = () => {
         {/* Right Column: Live Activity Feed & Map Widget */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
-          {/* Live Fleet Widget (Conceptual placeholder for Google Map integration in future) */}
+          {/* Live Fleet Widget */}
           <div className="admin-glass-card" style={{ padding: 0, overflow: 'hidden', height: '250px', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'url(https://maps.googleapis.com/maps/api/staticmap?center=5.6037,-0.1870&zoom=12&size=600x300&maptype=roadmap&style=feature:all|element:labels.text.fill|color:0x9e9e9e&style=feature:all|element:labels.text.stroke|color:0xf5f5f5&style=feature:water|element:geometry|color:0x2b1426&key=YOUR_API_KEY) center/cover' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(30, 14, 26, 0.7)' }}></div>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  center={{ lat: 5.6037, lng: -0.1870 }}
+                  zoom={12}
+                  options={mapOptions}
+                >
+                  {simulatedRiders.map(rider => (
+                    <Marker 
+                      key={rider.id} 
+                      position={{ lat: rider.lat, lng: rider.lng }} 
+                      icon={{
+                        url: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png'
+                      }}
+                    />
+                  ))}
+                </GoogleMap>
+              ) : (
+                <div style={{ width: '100%', height: '100%', background: '#1e0e1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading map...</div>
+              )}
+              {/* Gradient Overlay so text remains readable */}
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to bottom, rgba(30, 14, 26, 0.8) 0%, rgba(30, 14, 26, 0.2) 100%)', pointerEvents: 'none' }}></div>
             </div>
-            <div style={{ position: 'relative', zIndex: 1, padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ position: 'relative', zIndex: 1, padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', pointerEvents: 'none' }}>
               <h3 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span className="material-symbols-outlined" style={{ color: '#10b981' }}>my_location</span>
                 Live Fleet Status
