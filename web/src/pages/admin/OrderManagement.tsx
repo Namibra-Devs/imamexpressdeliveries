@@ -314,23 +314,31 @@ const OrderManagement: React.FC = () => {
               {/* Assignment Box */}
               <div id="assignment-box" style={{ background: 'rgba(160, 32, 240, 0.05)', border: '1px solid rgba(160, 32, 240, 0.2)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
                 <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Rider Assignment</h4>
-                {selectedOrder.status === 'PENDING' || selectedOrder.status === 'ASSIGNED' ? (
+                {['PENDING', 'ASSIGNED', 'PICKED_UP'].includes(selectedOrder.status) ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <select 
                       className="input-field" 
                       style={{ padding: '0.75rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', opacity: assigning ? 0.5 : 1 }}
                       value={selectedOrder.rider?.id || ""}
-                      onChange={(e) => handleAssignRider(selectedOrder.id, e.target.value)}
+                      onChange={(e) => {
+                        const confirmMsg = selectedOrder.rider ? `Reassign this order from ${selectedOrder.rider.name}?` : null;
+                        if (!confirmMsg || window.confirm(confirmMsg)) {
+                          handleAssignRider(selectedOrder.id, e.target.value);
+                        }
+                      }}
                       disabled={assigning}
                     >
                       <option value="" disabled>Assign a Rider</option>
                       {riders.map(r => <option key={r.id} value={r.id} style={{ color: '#000' }}>{r.name} - {r.phone}</option>)}
                     </select>
                     {selectedOrder.rider && (
-                      <p style={{ fontSize: '0.8rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>check_circle</span>
-                        Currently assigned to {selectedOrder.rider.name}
-                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                        <p style={{ fontSize: '0.8rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', margin: 0 }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>check_circle</span>
+                          Currently with {selectedOrder.rider.name}
+                        </p>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase' }}>Ready to Reassign</span>
+                      </div>
                     )}
                   </div>
                 ) : (

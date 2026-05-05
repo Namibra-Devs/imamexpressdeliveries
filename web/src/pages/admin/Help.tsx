@@ -122,6 +122,13 @@ const Help: React.FC = () => {
           <p style={{ color: '#ccc', lineHeight: '1.6', fontSize: '0.9rem' }}>
             To dispatch an order, locate a <code>PENDING</code> order in the grid. Click the three vertical dots (Quick Action Menu) on the far right of the row and select "Assign Rider", or simply click anywhere on the row to open the side panel. In the side panel, scroll down to the "Rider Assignment" box, select an available rider from the dropdown, and click "Assign".
           </p>
+          
+          <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '1rem', padding: '1.5rem', marginTop: '1.5rem' }}>
+            <h4 style={{ color: '#10b981', marginBottom: '0.5rem', fontSize: '1.1rem' }}>Advanced: Reassigning Riders</h4>
+            <p style={{ color: '#ccc', fontSize: '0.9rem', margin: 0, lineHeight: '1.5' }}>
+              The system allows for <strong>Emergency Reassignment</strong> at any point before final delivery (in case of emergencies or vehicle breakdowns or any reasons). If a rider is unable to complete a task (even after they have <code>PICKED_UP</code> the package), simply select a new rider from the assignment dropdown. The system will ask for confirmation and then reset the order status back to <code>ASSIGNED</code> for the new personnel.
+            </p>
+          </div>
         </section>
 
         {/* Section 2.5: Analytics */}
