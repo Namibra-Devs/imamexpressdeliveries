@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useLoadScript, GoogleMap, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
@@ -81,6 +82,8 @@ const OrderManagement: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [assigning, setAssigning] = useState(false);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
@@ -133,9 +136,17 @@ const OrderManagement: React.FC = () => {
     }
   };
 
-  const filteredOrders = filterStatus === 'ALL' 
-    ? orders 
-    : orders.filter(order => order.status === filterStatus);
+
+  const filteredOrders = orders.filter(order => {
+    const matchesStatus = filterStatus === 'ALL' || order.status === filterStatus;
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = 
+      order.id.toLowerCase().includes(q) ||
+      order.receiverName.toLowerCase().includes(q) ||
+      order.customer.name.toLowerCase().includes(q) ||
+      (order.rider?.name || '').toLowerCase().includes(q);
+    return matchesStatus && matchesSearch;
+  });
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><div className="loader"></div></div>;
 

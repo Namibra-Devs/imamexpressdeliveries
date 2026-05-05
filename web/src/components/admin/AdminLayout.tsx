@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLayout: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
 
   const handleLogout = () => {
     logout();
@@ -136,6 +138,8 @@ const AdminLayout: React.FC = () => {
               <input 
                 type="text" 
                 placeholder="Search orders, riders..." 
+                value={searchQuery}
+                onChange={(e) => setSearchParams({ q: e.target.value })}
                 style={{
                   width: '100%',
                   background: 'rgba(0,0,0,0.2)',
