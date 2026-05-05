@@ -16,6 +16,7 @@ import Customers from './pages/admin/Customers';
 import RidersManagement from './pages/admin/RidersManagement';
 import Analytics from './pages/admin/Analytics';
 import Help from './pages/admin/Help';
+import Settings from './pages/admin/Settings';
 import AssignedDeliveries from './pages/rider/AssignedDeliveries';
 import Profile from './pages/customer/Profile';
 
@@ -94,6 +95,7 @@ const App: React.FC = () => {
         <Route path="riders" element={<RidersManagement />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="help" element={<Help />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

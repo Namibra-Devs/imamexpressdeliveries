@@ -2,6 +2,8 @@ import { Response } from 'express';
 import prisma from '../prisma';
 import { AuthRequest } from '../middlewares/auth';
 import { OrderStatus } from '@prisma/client';
+import { transporter } from '../utils/mailer';
+import axios from 'axios';
 
 export const getDashboardMetrics = async (req: AuthRequest, res: Response): Promise<any> => {
   try {
@@ -77,6 +79,11 @@ export const getCustomers = async (req: AuthRequest, res: Response): Promise<any
 export const updatePricing = async (req: AuthRequest, res: Response): Promise<any> => {
   try {
     const { baseRate, perKmRate, expressMultiplier } = req.body;
+
+    if (baseRate < 0 || perKmRate < 0 || expressMultiplier < 0) {
+      return res.status(400).json({ message: 'Pricing values cannot be negative' });
+    }
+
     let pricing = await prisma.pricingConfig.findFirst();
     
     if (pricing) {
@@ -93,5 +100,46 @@ export const updatePricing = async (req: AuthRequest, res: Response): Promise<an
     res.json({ message: 'Pricing updated successfully', pricing });
   } catch (error: any) {
     res.status(500).json({ message: 'Error updating pricing', error: error.message });
+  }
+};
+export const getPricing = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const pricing = await prisma.pricingConfig.findFirst();
+    if (!pricing) {
+      // Return defaults if not found
+      return res.json({ pricing: { baseRate: 5.0, perKmRate: 1.5, expressMultiplier: 1.5 } });
+    }
+    res.json({ pricing });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching pricing', error: error.message });
+  }
+};
+
+export const getSystemStatus = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    // 1. Database Status
+    const dbStatus = await prisma.$queryRaw`SELECT 1`.then(() => 'online').catch(() => 'offline');
+
+    // 2. Email Status
+    let emailStatus = 'offline';
+    try {
+      await transporter.verify();
+      emailStatus = 'online';
+    } catch (err) {
+      emailStatus = 'offline';
+    }
+
+    // 3. Internet Status (pinging google)
+    let internetStatus = 'offline';
+    try {
+      await axios.get('https://www.google.com', { timeout: 3000 });
+      internetStatus = 'online';
+    } catch (err) {
+      internetStatus = 'offline';
+    }
+
+    res.json({ dbStatus, emailStatus, internetStatus });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching system status', error: error.message });
   }
 };

@@ -15,6 +15,7 @@ const Help: React.FC = () => {
     { id: 'colors', label: 'UI Color Guide', icon: 'palette' },
     { id: 'fleet', label: 'Fleet & Riders', icon: 'two_wheeler' },
     { id: 'customers', label: 'Customer Accounts', icon: 'group' },
+    { id: 'settings', label: 'System Settings', icon: 'settings' },
   ];
 
   return (
@@ -223,6 +224,33 @@ const Help: React.FC = () => {
           <p style={{ color: '#ccc', lineHeight: '1.6', fontSize: '0.9rem' }}>
             Like the Order grid, the Customer grid features a Quick Action Menu (three vertical dots) on the far right of each row. Opening a customer profile reveals their Email Verification status. Customers with a <code>Pending</code> status cannot log in to place orders until they click the link in their registration email. If a customer loses their email, they can request a new one via the public login page.
           </p>
+        </section>
+
+        {/* Section 6: Settings */}
+        <section id="settings" style={{ marginBottom: '4rem', paddingTop: '1rem' }}>
+          <h2 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>settings</span>
+            System Settings & Pricing
+          </h2>
+          <p style={{ color: '#ccc', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+            The Settings page allows you to control the fundamental behavior of the platform, specifically the automated pricing engine.
+          </p>
+          
+          <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '1rem', padding: '1.5rem' }}>
+            <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem' }}>Adjusting Delivery Pricing</h4>
+            <p style={{ color: '#ccc', fontSize: '0.9rem', marginBottom: '1rem', lineHeight: '1.5' }}>
+              The system calculates prices based on three variables. Any changes made here reflect <strong>immediately</strong> for all new customer orders.
+            </p>
+            <ul style={{ color: '#ccc', fontSize: '0.85rem', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li><strong>Base Rate:</strong> The flat fee charged for every single order, regardless of distance.</li>
+              <li><strong>Per KM Rate:</strong> The amount charged per kilometer calculated via the Google Maps integration.</li>
+              <li><strong>Express Multiplier:</strong> A multiplier (e.g., 1.5) applied for priority "Express" deliveries.</li>
+            </ul>
+            <p style={{ color: 'var(--primary)', fontSize: '0.8rem', marginTop: '1rem', fontWeight: 600 }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '1rem', verticalAlign: 'middle', marginRight: '4px' }}>info</span>
+              Note: The system strictly prevents negative values in these fields to ensure business integrity.
+            </p>
+          </div>
         </section>
 
       </div>

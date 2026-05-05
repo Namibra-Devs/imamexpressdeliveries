@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST || 'smtp.ethereal.email',
   port: parseInt(process.env.MAIL_PORT || '587'),
   auth: {
