@@ -41,28 +41,39 @@ const QuickActionMenu = ({ customer, onView }: { customer: Customer, onView: () 
   );
 };
 
+interface Order {
+  id: string;
+  status: string;
+  price: number;
+  customer: { id: string } | null;
+  createdAt: string;
+}
+
 const Customers: React.FC = () => {
   const { token } = useAuth();
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/customers', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setCustomers(res.data.customers);
+        const [custRes, orderRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/admin/customers', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get('http://localhost:5000/api/admin/orders', { headers: { Authorization: `Bearer ${token}` } })
+        ]);
+        setCustomers(custRes.data.customers);
+        setOrders(orderRes.data.orders);
       } catch (err) {
-        console.error('Failed to fetch customers:', err);
+        console.error('Failed to fetch data:', err);
         toast.error('Failed to load customers');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCustomers();
+    fetchData();
   }, [token]);
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><div className="loader"></div></div>;
@@ -214,6 +225,47 @@ const Customers: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Registered</span>
                   <span style={{ fontSize: '0.85rem', color: '#fff' }}>{new Date(selectedCustomer.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              {/* Customer Intelligence */}
+              <div style={{ width: '100%', marginTop: '2rem' }}>
+                <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Customer Intelligence</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+                    <p style={{ margin: 0, fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Orders</p>
+                    <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
+                      {orders.filter(o => o.customer?.id === selectedCustomer.id).length}
+                    </p>
+                  </div>
+                  <div style={{ background: 'rgba(160, 32, 240, 0.05)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(160, 32, 240, 0.1)' }}>
+                    <p style={{ margin: 0, fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Spend</p>
+                    <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary-light)' }}>
+                      GH₵{orders.filter(o => o.customer?.id === selectedCustomer.id && o.status === 'DELIVERED').reduce((sum, o) => sum + o.price, 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order History */}
+              <div style={{ width: '100%' }}>
+                <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Order History</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {orders.filter(o => o.customer?.id === selectedCustomer.id).slice(0, 5).map(o => (
+                    <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div>
+                        <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>Order #{o.id.slice(-6).toUpperCase()}</p>
+                        <p style={{ margin: 0, fontSize: '0.7rem', color: 'var(--text-muted)' }}>{new Date(o.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-light)' }}>GH₵{o.price.toFixed(2)}</p>
+                        <span className={`badge badge-${o.status.toLowerCase()}`} style={{ fontSize: '0.5rem', padding: '2px 6px' }}>{o.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                  {orders.filter(o => o.customer?.id === selectedCustomer.id).length === 0 && (
+                    <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', padding: '1rem' }}>No orders placed yet.</p>
+                  )}
                 </div>
               </div>
 

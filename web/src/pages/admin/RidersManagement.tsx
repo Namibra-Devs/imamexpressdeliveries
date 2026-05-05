@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 interface Rider {
   id: string;
@@ -257,6 +258,69 @@ const RidersManagement: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Onboarded</span>
                   <span style={{ fontSize: '0.85rem', color: '#fff' }}>{new Date(selectedRider.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              {/* Performance Metrics */}
+              <div style={{ width: '100%', marginTop: '2rem' }}>
+                <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Performance Metrics</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(160, 32, 240, 0.05)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(160, 32, 240, 0.1)' }}>
+                    <p style={{ margin: 0, fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Deliveries</p>
+                    <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
+                      {orders.filter(o => o.rider?.id === selectedRider.id).length}
+                    </p>
+                  </div>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1rem', borderRadius: '0.75rem', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+                    <p style={{ margin: 0, fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Success Rate</p>
+                    <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#10b981' }}>
+                      {(() => {
+                        const riderOrders = orders.filter(o => o.rider?.id === selectedRider.id);
+                        if (riderOrders.length === 0) return '0%';
+                        const completed = riderOrders.filter(o => o.status === 'DELIVERED').length;
+                        return `${Math.round((completed / riderOrders.length) * 100)}%`;
+                      })()}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Performance Chart */}
+                <div style={{ height: '180px', width: '100%', marginBottom: '2rem' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={[
+                      { name: 'Pending', count: orders.filter(o => o.rider?.id === selectedRider.id && o.status === 'ASSIGNED').length },
+                      { name: 'In Transit', count: orders.filter(o => o.rider?.id === selectedRider.id && o.status === 'PICKED_UP').length },
+                      { name: 'Delivered', count: orders.filter(o => o.rider?.id === selectedRider.id && o.status === 'DELIVERED').length }
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#666', fontSize: 10 }} />
+                      <YAxis hide />
+                      <Tooltip 
+                        contentStyle={{ background: '#1e0e1a', border: '1px solid rgba(160,32,240,0.2)', borderRadius: '8px' }}
+                        itemStyle={{ color: '#fff', fontSize: '12px' }}
+                      />
+                      <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} barSize={30} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div style={{ width: '100%' }}>
+                <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem' }}>Recent Activity</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {orders.filter(o => o.rider?.id === selectedRider.id).slice(0, 5).map(o => (
+                    <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div>
+                        <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 600, color: '#fff' }}>Order #{o.id.slice(-6).toUpperCase()}</p>
+                        <p style={{ margin: 0, fontSize: '0.7rem', color: 'var(--text-muted)' }}>Status: {o.status}</p>
+                      </div>
+                      <span className={`badge badge-${o.status.toLowerCase()}`} style={{ fontSize: '0.6rem' }}>{o.status}</span>
+                    </div>
+                  ))}
+                  {orders.filter(o => o.rider?.id === selectedRider.id).length === 0 && (
+                    <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', padding: '1rem' }}>No activity recorded yet.</p>
+                  )}
                 </div>
               </div>
 

@@ -15,6 +15,7 @@ const Help: React.FC = () => {
     { id: 'colors', label: 'UI Color Guide', icon: 'palette' },
     { id: 'fleet', label: 'Fleet & Riders', icon: 'two_wheeler' },
     { id: 'customers', label: 'Customer Accounts', icon: 'group' },
+    { id: 'admin-profile', label: 'Admin Identity', icon: 'person' },
     { id: 'settings', label: 'System Settings', icon: 'settings' },
   ];
 
@@ -210,6 +211,13 @@ const Help: React.FC = () => {
               <strong>To onboard a new rider</strong>, click the "Onboard Rider" button at the top right. Fill out their details and a temporary password. The system will automatically create their account and send them a secure verification email.
             </p>
           </div>
+
+          <div style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '1rem', padding: '1.5rem', marginTop: '1.5rem' }}>
+            <h4 style={{ color: '#10b981', marginBottom: '0.5rem', fontSize: '1.1rem' }}>3. Performance Tracking</h4>
+            <p style={{ color: '#ccc', fontSize: '0.9rem', margin: 0, lineHeight: '1.5' }}>
+              The system tracks every rider's performance automatically. Open any rider profile to see their <strong>Success Rate</strong>, <strong>Total Deliveries</strong>, and a visual <strong>Workload Distribution</strong> chart. This data is updated in real-time as orders are completed.
+            </p>
+          </div>
         </section>
 
         {/* Section 5: Customers */}
@@ -224,6 +232,27 @@ const Help: React.FC = () => {
           <p style={{ color: '#ccc', lineHeight: '1.6', fontSize: '0.9rem' }}>
             Like the Order grid, the Customer grid features a Quick Action Menu (three vertical dots) on the far right of each row. Opening a customer profile reveals their Email Verification status. Customers with a <code>Pending</code> status cannot log in to place orders until they click the link in their registration email. If a customer loses their email, they can request a new one via the public login page.
           </p>
+        </section>
+
+        {/* Section 5.5: Admin Identity */}
+        <section id="admin-profile" style={{ marginBottom: '4rem', paddingTop: '1rem' }}>
+          <h2 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>person</span>
+            Admin Identity & Security
+          </h2>
+          <p style={{ color: '#ccc', lineHeight: '1.6', marginBottom: '1.5rem' }}>
+            As an administrator, you can manage your own account by clicking your name or avatar at the bottom of the left sidebar.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+              <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>Profile Management</h4>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Update your professional details and upload a profile picture. The sidebar avatar will synchronize instantly with your changes.</p>
+            </div>
+            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+              <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>Security Credentials</h4>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Change your administrative password securely. The system requires your current password for verification before committing any changes.</p>
+            </div>
+          </div>
         </section>
 
         {/* Section 6: Settings */}
