@@ -83,29 +83,29 @@ const Profile: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result as string;
-        setFormData({ ...formData, profileImage: base64 });
-        
-        // Immediate upload
-        const uploadPromise = axios.put('http://localhost:5000/api/user/profile', 
-          { ...formData, profileImage: base64 }, 
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        
-        toast.promise(uploadPromise, {
-          loading: 'Uploading profile picture...',
-          success: (res) => {
-            if (authUser) {
-              login(res.data.user, token!);
-            }
-            return 'Profile picture updated successfully!';
-          },
-          error: (err) => err.response?.data?.message || 'Failed to upload profile picture.'
-        });
-      };
-      reader.readAsDataURL(file);
+      const formPayload = new FormData();
+      formPayload.append('profileImage', file);
+      
+      const uploadPromise = axios.post('http://localhost:5000/api/user/upload-profile-image', 
+        formPayload, 
+        { headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          } 
+        }
+      );
+      
+      toast.promise(uploadPromise, {
+        loading: 'Uploading profile picture...',
+        success: (res) => {
+          setFormData({ ...formData, profileImage: res.data.user.profileImage });
+          if (authUser) {
+            login(res.data.user, token!);
+          }
+          return 'Profile picture updated successfully!';
+        },
+        error: (err) => err.response?.data?.message || 'Failed to upload profile picture.'
+      });
     }
   };
 
@@ -155,7 +155,7 @@ const Profile: React.FC = () => {
             <div style={{ 
               width: '100px', 
               height: '100px', 
-              background: formData.profileImage ? `url(${formData.profileImage}) center/cover` : 'var(--primary)', 
+              background: formData.profileImage ? `url(${formData.profileImage.startsWith('data:') || formData.profileImage.startsWith('http') ? formData.profileImage : `http://localhost:5000${formData.profileImage}`}) center/cover` : 'var(--primary)', 
               borderRadius: '50%', 
               display: 'flex', 
               alignItems: 'center', 
