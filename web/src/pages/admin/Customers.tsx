@@ -9,6 +9,7 @@ interface Customer {
   email: string;
   phone: string | null;
   emailVerified: boolean;
+  isSuspended: boolean;
   createdAt: string;
 }
 
@@ -55,6 +56,22 @@ const Customers: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleToggleSuspend = async (id: string) => {
+    try {
+      const res = await axios.put(`http://localhost:5000/api/admin/customers/${id}/suspend`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCustomers(customers.map(c => c.id === id ? { ...c, isSuspended: res.data.customer.isSuspended } : c));
+      if (selectedCustomer?.id === id) {
+        setSelectedCustomer({ ...selectedCustomer, isSuspended: res.data.customer.isSuspended });
+      }
+      toast.success(res.data.message);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to toggle suspension');
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +104,16 @@ const Customers: React.FC = () => {
         <div>
           <h2 style={{ fontSize: '2rem', fontWeight: 700, color: '#fff', marginBottom: '0.2rem' }}>Customers</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Manage registered users and accounts</p>
+        </div>
+        <div style={{ position: 'relative', width: '300px' }}>
+          <span className="material-symbols-outlined" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>search</span>
+          <input 
+            type="text" 
+            placeholder="Search name or email..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 3rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#fff', outline: 'none' }}
+          />
         </div>
       </div>
 
@@ -128,7 +155,7 @@ const Customers: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {customers.map(customer => (
+                {customers.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()) || c.email.toLowerCase().includes(searchTerm.toLowerCase())).map(customer => (
                   <tr 
                     key={customer.id} 
                     onClick={() => setSelectedCustomer(customer)}
@@ -157,7 +184,11 @@ const Customers: React.FC = () => {
                       </div>
                     </td>
                     <td style={{ padding: '1.25rem 2rem' }}>
-                      {customer.emailVerified ? (
+                      {customer.isSuspended ? (
+                        <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                          Suspended
+                        </span>
+                      ) : customer.emailVerified ? (
                         <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                           Verified
                         </span>
@@ -218,8 +249,8 @@ const Customers: React.FC = () => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Status</span>
-                  <span style={{ fontSize: '0.85rem', color: selectedCustomer.emailVerified ? '#10b981' : '#f59e0b' }}>
-                    {selectedCustomer.emailVerified ? 'Verified' : 'Pending Verification'}
+                  <span style={{ fontSize: '0.85rem', color: selectedCustomer.isSuspended ? '#ef4444' : selectedCustomer.emailVerified ? '#10b981' : '#f59e0b' }}>
+                    {selectedCustomer.isSuspended ? 'Suspended' : selectedCustomer.emailVerified ? 'Verified' : 'Pending Verification'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -270,11 +301,11 @@ const Customers: React.FC = () => {
               </div>
 
               <div style={{ width: '100%', marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-                 <button style={{ flex: 1, padding: '0.75rem', background: 'rgba(160, 32, 240, 0.1)', border: '1px solid rgba(160, 32, 240, 0.3)', color: '#D8B4FE', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }} className="nav-item-hover">
+                 <button onClick={() => window.location.href = `mailto:${selectedCustomer.email}`} style={{ flex: 1, padding: '0.75rem', background: 'rgba(160, 32, 240, 0.1)', border: '1px solid rgba(160, 32, 240, 0.3)', color: '#D8B4FE', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }} className="nav-item-hover">
                    <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>mail</span> Email
                  </button>
-                 <button style={{ flex: 1, padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }} className="nav-item-hover">
-                   <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>block</span> Suspend
+                 <button onClick={() => handleToggleSuspend(selectedCustomer.id)} style={{ flex: 1, padding: '0.75rem', background: selectedCustomer.isSuspended ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', border: selectedCustomer.isSuspended ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)', color: selectedCustomer.isSuspended ? '#10b981' : '#ef4444', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }} className="nav-item-hover">
+                   <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>{selectedCustomer.isSuspended ? 'check_circle' : 'block'}</span> {selectedCustomer.isSuspended ? 'Unsuspend' : 'Suspend'}
                  </button>
               </div>
 

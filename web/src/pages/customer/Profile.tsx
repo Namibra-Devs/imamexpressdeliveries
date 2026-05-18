@@ -29,7 +29,9 @@ const Profile: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    profileImage: ''
+    profileImage: '',
+    homeAddress: '',
+    workAddress: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,8 +57,8 @@ const Profile: React.FC = () => {
         const res = await axios.get('http://localhost:5000/api/user/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const { name, email, phone, profileImage } = res.data.user;
-        setFormData({ name, email, phone: phone || '', profileImage: profileImage || '' });
+        const { name, email, phone, profileImage, homeAddress, workAddress } = res.data.user;
+        setFormData({ name, email, phone: phone || '', profileImage: profileImage || '', homeAddress: homeAddress || '', workAddress: workAddress || '' });
       } catch (err) {
         console.error('Failed to fetch profile:', err);
         toast.error('Failed to load profile details.');
@@ -225,6 +227,30 @@ const Profile: React.FC = () => {
                 name="phone"
                 placeholder="+1234567890"
                 value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="input-label" style={{ color: '#fff' }}>Home Address</label>
+              <input
+                type="text"
+                className="input-field"
+                name="homeAddress"
+                placeholder="123 Main St, Apartment 4B"
+                value={formData.homeAddress}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="input-group">
+              <label className="input-label" style={{ color: '#fff' }}>Work Address</label>
+              <input
+                type="text"
+                className="input-field"
+                name="workAddress"
+                placeholder="456 Corporate Blvd, Suite 100"
+                value={formData.workAddress}
                 onChange={handleChange}
               />
             </div>

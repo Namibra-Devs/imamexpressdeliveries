@@ -48,6 +48,7 @@ const CreateOrder: React.FC = () => {
   const [distanceEstimate, setDistanceEstimate] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState({ home: '', work: '' });
 
   const pickupAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const dropoffAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -123,6 +124,25 @@ const CreateOrder: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, [formData.pickupLocation, formData.dropoffLocation, token]);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/user/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSavedAddresses({
+          home: res.data.user.homeAddress || '',
+          work: res.data.user.workAddress || ''
+        });
+      } catch (err) {
+        console.error('Failed to fetch profile addresses:', err);
+      }
+    };
+    if (token) {
+      fetchProfile();
+    }
+  }, [token]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -175,7 +195,13 @@ const CreateOrder: React.FC = () => {
           <div style={{ position: 'absolute', left: '-4px', bottom: '30px', width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%' }}></div>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pick up Location</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+              <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 0 }}>Pick up Location</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {savedAddresses.home && <span onClick={() => setFormData(prev => ({ ...prev, pickupLocation: savedAddresses.home }))} style={{ fontSize: '0.65rem', background: 'rgba(160,32,240,0.2)', color: '#D8B4FE', padding: '2px 8px', borderRadius: '10px', cursor: 'pointer' }} className="nav-item-hover">🏡 Home</span>}
+                {savedAddresses.work && <span onClick={() => setFormData(prev => ({ ...prev, pickupLocation: savedAddresses.work }))} style={{ fontSize: '0.65rem', background: 'rgba(16,185,129,0.2)', color: '#10b981', padding: '2px 8px', borderRadius: '10px', cursor: 'pointer' }} className="nav-item-hover">🏢 Work</span>}
+              </div>
+            </div>
             {isLoaded ? (
               <Autocomplete onLoad={(autoC) => pickupAutocompleteRef.current = autoC} onPlaceChanged={onPickupPlaceChanged}>
                 <input type="text" className="input-field" name="pickupLocation" placeholder="Search pickup address" value={formData.pickupLocation} onChange={handleChange} required />
@@ -186,7 +212,13 @@ const CreateOrder: React.FC = () => {
           </div>
 
           <div>
-            <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Drop off Location</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+              <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 0 }}>Drop off Location</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {savedAddresses.home && <span onClick={() => setFormData(prev => ({ ...prev, dropoffLocation: savedAddresses.home }))} style={{ fontSize: '0.65rem', background: 'rgba(160,32,240,0.2)', color: '#D8B4FE', padding: '2px 8px', borderRadius: '10px', cursor: 'pointer' }} className="nav-item-hover">🏡 Home</span>}
+                {savedAddresses.work && <span onClick={() => setFormData(prev => ({ ...prev, dropoffLocation: savedAddresses.work }))} style={{ fontSize: '0.65rem', background: 'rgba(16,185,129,0.2)', color: '#10b981', padding: '2px 8px', borderRadius: '10px', cursor: 'pointer' }} className="nav-item-hover">🏢 Work</span>}
+              </div>
+            </div>
             {isLoaded ? (
               <Autocomplete onLoad={(autoC) => dropoffAutocompleteRef.current = autoC} onPlaceChanged={onDropoffPlaceChanged}>
                 <input type="text" className="input-field" name="dropoffLocation" placeholder="Search delivery address" value={formData.dropoffLocation} onChange={handleChange} required />

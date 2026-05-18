@@ -143,3 +143,21 @@ export const getSystemStatus = async (req: AuthRequest, res: Response): Promise<
     res.status(500).json({ message: 'Error fetching system status', error: error.message });
   }
 };
+
+export const toggleCustomerSuspension = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const id = req.params.id as string;
+    
+    const customer = await prisma.user.findFirst({ where: { id, role: 'CUSTOMER' } });
+    if (!customer) return res.status(404).json({ message: 'Customer not found' });
+
+    const updatedCustomer = await prisma.user.update({
+      where: { id },
+      data: { isSuspended: !customer.isSuspended }
+    });
+
+    res.json({ message: `Customer ${updatedCustomer.isSuspended ? 'suspended' : 'unsuspended'} successfully`, customer: updatedCustomer });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error toggling customer suspension', error: error.message });
+  }
+};

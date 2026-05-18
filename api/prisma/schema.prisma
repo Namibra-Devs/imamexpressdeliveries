@@ -33,6 +33,7 @@ model User {
   homeAddress String?
   workAddress String?
   emailVerified Boolean @default(false)
+  isSuspended Boolean @default(false)
   verificationToken String?
   verificationTokenExpiresAt DateTime?
   profileImage String?
