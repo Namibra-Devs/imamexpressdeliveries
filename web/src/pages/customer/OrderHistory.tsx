@@ -114,6 +114,14 @@ const OrderHistory: React.FC = () => {
                 <span style={{ fontWeight: 600, color: '#fff', fontSize: '0.875rem' }}>GH₵{order.price.toFixed(2)}</span>
               </div>
 
+              {/* Prominent PIN Display on Unexpanded Card */}
+              {['ASSIGNED', 'PICKED_UP'].includes(order.status) && order.deliveryPin && (
+                <div style={{ marginBottom: '1rem', background: 'rgba(234, 179, 8, 0.1)', border: '1px dashed rgba(234, 179, 8, 0.4)', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.65rem', color: '#eab308', textTransform: 'uppercase', fontWeight: 700 }}>Give this PIN to Rider:</span>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#eab308', letterSpacing: '0.1rem' }}>{order.deliveryPin}</span>
+                </div>
+              )}
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#fff', marginTop: '4px', flexShrink: 0 }}></div>
@@ -153,13 +161,7 @@ const OrderHistory: React.FC = () => {
                     <p style={{ fontSize: '0.85rem', color: '#fff' }}>{order.receiverContact}</p>
                   </div>
                   
-                  {['ASSIGNED', 'PICKED_UP'].includes(order.status) && order.deliveryPin && (
-                    <div style={{ marginBottom: '1rem', background: 'rgba(160, 32, 240, 0.1)', border: '1px dashed rgba(160, 32, 240, 0.3)', padding: '0.75rem', borderRadius: '0.75rem', textAlign: 'center' }}>
-                      <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.65rem', color: 'var(--primary-light)', textTransform: 'uppercase' }}>Delivery PIN (Give to Rider)</p>
-                      <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.2rem', color: '#fff' }}>{order.deliveryPin}</h4>
-                    </div>
-                  )}
-
+                  {/* PIN Display in Expanded view was here, moved to unexpanded card to ensure it's always visible */}
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.75rem', borderRadius: '0.5rem', marginBottom: '1rem' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Delivery Assignment</p>
                     {order.rider ? (
@@ -284,6 +286,16 @@ const OrderHistory: React.FC = () => {
             <div style={{ fontSize: '0.6rem', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</div>
             <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--primary)' }}>{selectedOrder.status}</div>
           </div>
+          
+          {['ASSIGNED', 'PICKED_UP'].includes(selectedOrder.status) && selectedOrder.deliveryPin && (
+            <>
+              <div style={{ width: '1px', height: '20px', background: '#ddd' }}></div>
+              <div>
+                <div style={{ fontSize: '0.6rem', color: '#eab308', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>Delivery PIN</div>
+                <div style={{ fontWeight: 800, fontSize: '1rem', color: '#eab308', letterSpacing: '0.1rem' }}>{selectedOrder.deliveryPin}</div>
+              </div>
+            </>
+          )}
         </div>
       )}
 
