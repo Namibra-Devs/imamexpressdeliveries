@@ -37,7 +37,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
               className="header-profile-pic" 
               onClick={() => navigate('/customer/profile')}
               style={{ 
-                background: user?.profileImage ? `url(${user.profileImage}) center/cover` : 'var(--primary)',
+                background: user?.profileImage ? `url(${user.profileImage.startsWith('data:') || user.profileImage.startsWith('http') ? user.profileImage : `http://localhost:5000${user.profileImage}`}) center/cover` : 'var(--primary)',
                 border: '2px solid #fff',
                 overflow: 'hidden'
               }}
