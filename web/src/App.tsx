@@ -21,8 +21,8 @@ import Help from './pages/admin/Help';
 import Settings from './pages/admin/Settings';
 import AssignedDeliveries from './pages/rider/AssignedDeliveries';
 import Profile from './pages/customer/Profile';
+import LandingPage from './pages/LandingPage';
 
-import AppLayout from './components/AppLayout';
 import TopNavbar from './components/TopNavbar';
 import AdminLayout from './components/admin/AdminLayout';
 
@@ -33,15 +33,6 @@ const DefaultLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {children}
     </main>
   </>
-);
-
-const Home = () => (
-  <AppLayout leftContent={
-    <div style={{ paddingTop: '5rem', textAlign: 'center' }}>
-      <h1 className="text-gradient">Premium Logistics & Delivery</h1>
-      <p className="text-muted" style={{ marginTop: '1rem' }}>Fast, secure, and beautiful delivery services.</p>
-    </div>
-  } />
 );
 
 import { Toaster } from 'react-hot-toast';
@@ -57,7 +48,7 @@ const App: React.FC = () => {
     <>
       <Toaster position="top-right" />
       <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/register-success" element={<RegisterSuccess />} />
