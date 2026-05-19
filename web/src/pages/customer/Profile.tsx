@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
-import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api';
+import { useLoadScript, GoogleMap, Marker, Autocomplete } from '@react-google-maps/api';
 import AppLayout from '../../components/AppLayout';
+
+const libraries: ("places")[] = ["places"];
 
 const mapContainerStyle = {
   width: '100%',
@@ -23,6 +25,7 @@ const Profile: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
+    libraries,
   });
 
   const [formData, setFormData] = useState({
@@ -36,6 +39,50 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [activeAddressField, setActiveAddressField] = useState<'homeAddress' | 'workAddress' | null>(null);
+
+  const homeAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const workAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const onHomePlaceChanged = () => {
+    if (homeAutocompleteRef.current) {
+      const place = homeAutocompleteRef.current.getPlace();
+      if (place.formatted_address) {
+        setFormData(prev => ({ ...prev, homeAddress: place.formatted_address! }));
+      } else if (place.name) {
+        setFormData(prev => ({ ...prev, homeAddress: place.name || '' }));
+      }
+    }
+  };
+
+  const onWorkPlaceChanged = () => {
+    if (workAutocompleteRef.current) {
+      const place = workAutocompleteRef.current.getPlace();
+      if (place.formatted_address) {
+        setFormData(prev => ({ ...prev, workAddress: place.formatted_address! }));
+      } else if (place.name) {
+        setFormData(prev => ({ ...prev, workAddress: place.name || '' }));
+      }
+    }
+  };
+
+  const onMapClick = (e: google.maps.MapMouseEvent) => {
+    if (!activeAddressField || !e.latLng) return;
+    
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setUserLocation({ lat, lng });
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        setFormData(prev => ({ ...prev, [activeAddressField]: results[0].formatted_address }));
+        toast.success(`${activeAddressField === 'homeAddress' ? 'Home' : 'Work'} address pinned!`);
+      } else {
+        toast.error('Could not find address for this location.');
+      }
+    });
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -233,26 +280,56 @@ const Profile: React.FC = () => {
 
             <div className="input-group">
               <label className="input-label" style={{ color: '#fff' }}>Home Address</label>
-              <input
-                type="text"
-                className="input-field"
-                name="homeAddress"
-                placeholder="123 Main St, Apartment 4B"
-                value={formData.homeAddress}
-                onChange={handleChange}
-              />
+              {isLoaded ? (
+                <Autocomplete onLoad={(autoC) => homeAutocompleteRef.current = autoC} onPlaceChanged={onHomePlaceChanged}>
+                  <input
+                    type="text"
+                    className="input-field"
+                    name="homeAddress"
+                    placeholder="123 Main St, Apartment 4B"
+                    value={formData.homeAddress}
+                    onChange={handleChange}
+                    onFocus={() => setActiveAddressField('homeAddress')}
+                  />
+                </Autocomplete>
+              ) : (
+                <input
+                  type="text"
+                  className="input-field"
+                  name="homeAddress"
+                  placeholder="123 Main St, Apartment 4B"
+                  value={formData.homeAddress}
+                  onChange={handleChange}
+                  onFocus={() => setActiveAddressField('homeAddress')}
+                />
+              )}
             </div>
 
             <div className="input-group">
               <label className="input-label" style={{ color: '#fff' }}>Work Address</label>
-              <input
-                type="text"
-                className="input-field"
-                name="workAddress"
-                placeholder="456 Corporate Blvd, Suite 100"
-                value={formData.workAddress}
-                onChange={handleChange}
-              />
+              {isLoaded ? (
+                <Autocomplete onLoad={(autoC) => workAutocompleteRef.current = autoC} onPlaceChanged={onWorkPlaceChanged}>
+                  <input
+                    type="text"
+                    className="input-field"
+                    name="workAddress"
+                    placeholder="456 Corporate Blvd, Suite 100"
+                    value={formData.workAddress}
+                    onChange={handleChange}
+                    onFocus={() => setActiveAddressField('workAddress')}
+                  />
+                </Autocomplete>
+              ) : (
+                <input
+                  type="text"
+                  className="input-field"
+                  name="workAddress"
+                  placeholder="456 Corporate Blvd, Suite 100"
+                  value={formData.workAddress}
+                  onChange={handleChange}
+                  onFocus={() => setActiveAddressField('workAddress')}
+                />
+              )}
             </div>
 
             <button
@@ -285,12 +362,35 @@ const Profile: React.FC = () => {
 
   const rightContent = (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {activeAddressField && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'var(--primary)',
+          color: '#fff',
+          padding: '0.75rem 1.5rem',
+          borderRadius: '2rem',
+          zIndex: 10,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          pointerEvents: 'none'
+        }}>
+          <span className="material-symbols-outlined">location_on</span>
+          Click on the map to set your {activeAddressField === 'homeAddress' ? 'Home' : 'Work'} address
+        </div>
+      )}
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={userLocation || defaultCenter}
           zoom={14}
-          options={mapOptions}
+          options={{ ...mapOptions, draggableCursor: activeAddressField ? 'crosshair' : 'grab' }}
+          onClick={onMapClick}
         >
           {userLocation && <Marker position={userLocation} />}
         </GoogleMap>
