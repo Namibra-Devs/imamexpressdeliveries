@@ -88,6 +88,7 @@ const RiderLayout: React.FC = () => {
         zIndex: 50,
         padding: '0.5rem 0 1rem 0',
         display: 'flex',
+        flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
         boxShadow: '0 -5px 20px rgba(0,0,0,0.4)'

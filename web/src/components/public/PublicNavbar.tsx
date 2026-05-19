@@ -16,7 +16,7 @@ const PublicNavbar: React.FC = () => {
   };
 
   return (
-    <nav style={{
+    <nav className="public-nav" style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',

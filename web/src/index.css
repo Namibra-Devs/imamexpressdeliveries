@@ -550,7 +550,7 @@ a {
     font-size: 1rem !important;
   }
 
-  nav {
+  .public-nav {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem 5% !important;

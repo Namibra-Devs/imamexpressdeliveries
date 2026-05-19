@@ -8,6 +8,11 @@ export const getAssignedOrders = async (req: AuthRequest, res: Response): Promis
     const riderId = req.user.userId;
     const orders = await prisma.order.findMany({
       where: { riderId },
+      include: {
+        customer: {
+          select: { name: true, email: true, phone: true }
+        }
+      },
       orderBy: { updatedAt: 'desc' }
     });
 

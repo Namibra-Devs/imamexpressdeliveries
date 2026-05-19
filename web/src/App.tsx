@@ -23,6 +23,7 @@ import AssignedDeliveries from './pages/rider/AssignedDeliveries';
 import DashboardRider from './pages/rider/Dashboard';
 import EarningsRider from './pages/rider/Earnings';
 import ProfileRider from './pages/rider/Profile';
+import ActiveRouteMap from './pages/rider/ActiveRouteMap';
 import Profile from './pages/customer/Profile';
 import LandingPage from './pages/LandingPage';
 import AboutUs from './pages/public/AboutUs';
@@ -105,6 +106,12 @@ const App: React.FC = () => {
         <Route path="earnings" element={<EarningsRider />} />
         <Route path="profile" element={<ProfileRider />} />
       </Route>
+
+      <Route path="/rider/map" element={
+        <ProtectedRoute allowedRoles={['RIDER']}>
+          <ActiveRouteMap />
+        </ProtectedRoute>
+      } />
 
       {/* Admin Routes */}
       <Route path="/admin" element={

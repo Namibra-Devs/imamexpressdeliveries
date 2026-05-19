@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 interface Order {
   id: string;
@@ -9,16 +10,26 @@ interface Order {
   dropoffLocation: string;
   receiverName: string;
   receiverContact: string;
+  packageDescription?: string;
   status: string;
   price: number;
+  createdAt: string;
+  updatedAt: string;
+  customer?: {
+    name: string;
+    email: string;
+    phone: string;
+  };
 }
 
 const AssignedDeliveries: React.FC = () => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   // Security PIN Modal State
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
@@ -68,9 +79,12 @@ const AssignedDeliveries: React.FC = () => {
     }
   };
 
-  const openMaps = (location: string) => {
-    const query = encodeURIComponent(location);
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+  const openMaps = (order: Order) => {
+    navigate('/rider/map', { state: { order } });
+  };
+
+  const toggleExpand = (orderId: string) => {
+    setExpandedOrderId(prev => prev === orderId ? null : orderId);
   };
 
   const initiateDelivery = (orderId: string) => {
@@ -112,92 +126,171 @@ const AssignedDeliveries: React.FC = () => {
         <div style={{ display: 'grid', gap: '1.25rem' }}>
           {orders.map((order) => (
             <div key={order.id} style={{ 
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.05)',
+              background: expandedOrderId === order.id ? '#1e0e1a' : 'rgba(255,255,255,0.02)',
+              border: expandedOrderId === order.id ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.05)',
               borderRadius: '1.25rem',
-              padding: '1.25rem',
               display: 'flex', 
               flexDirection: 'column', 
-              gap: '1.25rem',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+              boxShadow: expandedOrderId === order.id ? '0 10px 30px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.2)',
+              transition: 'all 0.3s ease',
+              overflow: 'hidden'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem' }}>
-                <span className={`badge badge-${order.status.toLowerCase()}`}>{order.status}</span>
-                <span style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>GH₵{order.price.toFixed(2)}</span>
-              </div>
               
-              <div style={{ display: 'grid', gap: '1rem' }}>
-                {/* Pickup */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <span className="material-symbols-outlined" style={{ color: '#eab308', marginTop: '0.1rem' }}>trip_origin</span>
-                    <div>
-                      <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.1rem' }}>Pickup Location</p>
-                      <p style={{ fontWeight: 600, fontSize: '0.95rem' }}>{order.pickupLocation}</p>
-                    </div>
+              {/* Clickable Header Area */}
+              <div 
+                onClick={() => toggleExpand(order.id)}
+                style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span className={`badge badge-${order.status.toLowerCase()}`}>{order.status}</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.2rem', color: 'var(--text-muted)', transition: 'transform 0.3s ease', transform: expandedOrderId === order.id ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                      expand_more
+                    </span>
                   </div>
-                  <button onClick={() => openMaps(order.pickupLocation)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '0.5rem', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-light)', cursor: 'pointer' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>navigation</span>
-                  </button>
+                  <span style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>GH₵{order.price.toFixed(2)}</span>
                 </div>
                 
-                <div style={{ borderLeft: '2px dashed rgba(255,255,255,0.1)', height: '15px', marginLeft: '11px', marginTop: '-0.5rem', marginBottom: '-0.5rem' }}></div>
-
-                {/* Dropoff */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <span className="material-symbols-outlined" style={{ color: '#22c55e', marginTop: '0.1rem' }}>location_on</span>
-                    <div>
-                      <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.1rem' }}>Drop-off Location</p>
-                      <p style={{ fontWeight: 600, fontSize: '0.95rem' }}>{order.dropoffLocation}</p>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {/* Pickup */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <span className="material-symbols-outlined" style={{ color: '#eab308', marginTop: '0.1rem' }}>trip_origin</span>
+                      <div>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.1rem' }}>Pickup Location</p>
+                        <p style={{ fontWeight: 600, fontSize: '0.95rem' }}>{order.pickupLocation}</p>
+                      </div>
                     </div>
                   </div>
-                  <button onClick={() => openMaps(order.dropoffLocation)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '0.5rem', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-light)', cursor: 'pointer' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>navigation</span>
-                  </button>
-                </div>
-              </div>
+                  
+                  <div style={{ borderLeft: '2px dashed rgba(255,255,255,0.1)', height: '15px', marginLeft: '11px', marginTop: '-0.5rem', marginBottom: '-0.5rem' }}></div>
 
-              <div style={{ background: 'rgba(0,0,0,0.2)', padding: '0.75rem 1rem', borderRadius: '0.75rem' }}>
-                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Receiver Contact</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <p style={{ fontWeight: 500, fontSize: '0.9rem' }}>{order.receiverName}</p>
-                  <a href={`tel:${order.receiverContact}`} style={{ color: 'var(--primary-light)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>call</span>
-                    {order.receiverContact}
-                  </a>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ marginTop: '0.5rem' }}>
-                {order.status === 'ASSIGNED' && (
-                  <button 
-                    className="btn btn-primary" 
-                    style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '0.95rem', fontWeight: 700, opacity: updating ? 0.7 : 1 }}
-                    onClick={() => handleStatusUpdate(order.id, 'PICKED_UP')}
-                    disabled={updating}
-                  >
-                    {updating ? 'Updating...' : 'I have picked up the package'}
-                  </button>
-                )}
-                {order.status === 'PICKED_UP' && (
-                  <button 
-                    className="btn btn-primary" 
-                    style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '0.95rem', fontWeight: 700, background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', opacity: updating ? 0.7 : 1 }}
-                    onClick={() => initiateDelivery(order.id)}
-                    disabled={updating}
-                  >
-                    Enter Delivery PIN
-                  </button>
-                )}
-                {order.status === 'DELIVERED' && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'rgba(34, 197, 94, 0.1)', padding: '0.75rem', borderRadius: '1rem', color: '#22c55e', fontWeight: 700 }}>
-                    <span className="material-symbols-outlined">verified</span>
-                    Delivery Complete
+                  {/* Dropoff */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <span className="material-symbols-outlined" style={{ color: '#22c55e', marginTop: '0.1rem' }}>location_on</span>
+                      <div>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.1rem' }}>Drop-off Location</p>
+                        <p style={{ fontWeight: 600, fontSize: '0.95rem' }}>{order.dropoffLocation}</p>
+                      </div>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
+
+              {/* Expanded Details Area */}
+              <AnimatePresence>
+                {expandedOrderId === order.id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <div style={{ padding: '0 1.25rem 1.25rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: '-0.5rem', paddingTop: '1rem' }}>
+                      
+                      {/* Timeline */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'rgba(0,0,0,0.2)', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                        <div>
+                          <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Created On</p>
+                          <p style={{ fontSize: '0.8rem', fontWeight: 600 }}>{new Date(order.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Last Updated</p>
+                          <p style={{ fontSize: '0.8rem', fontWeight: 600 }}>{new Date(order.updatedAt).toLocaleString()}</p>
+                        </div>
+                      </div>
+
+                      {/* Package Info */}
+                      <div>
+                        <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Package Description</p>
+                        <p style={{ fontSize: '0.85rem', lineHeight: 1.5 }}>{order.packageDescription || 'No description provided.'}</p>
+                      </div>
+
+                      {/* Customer Info */}
+                      {order.customer && (
+                        <div style={{ background: 'rgba(160, 32, 240, 0.05)', border: '1px solid rgba(160, 32, 240, 0.2)', padding: '0.75rem 1rem', borderRadius: '0.75rem' }}>
+                          <p style={{ fontSize: '0.65rem', color: 'var(--primary-light)', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: 700 }}>Customer Information</p>
+                          <p style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.2rem' }}>{order.customer.name}</p>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>{order.customer.email}</p>
+                            <a href={`tel:${order.customer.phone}`} style={{ fontSize: '0.75rem', color: 'var(--primary-light)', fontWeight: 600, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                              <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>call</span>
+                              {order.customer.phone || 'N/A'}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Receiver Contact */}
+                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '0.75rem 1rem', borderRadius: '0.75rem' }}>
+                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Receiver (Destination)</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <p style={{ fontWeight: 500, fontSize: '0.9rem' }}>{order.receiverName}</p>
+                          <a href={`tel:${order.receiverContact}`} style={{ color: 'var(--primary-light)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>call</span>
+                            {order.receiverContact}
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Order ID Footer */}
+                      <div style={{ textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Order ID: {order.id}
+                        </p>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Action Buttons (Always visible at bottom of card) */}
+              <div style={{ padding: '0 1.25rem 1.25rem 1.25rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  {order.status !== 'DELIVERED' && (
+                    <button 
+                      className="btn" 
+                      onClick={() => openMaps(order)}
+                      style={{ width: '100%', padding: '0.8rem', borderRadius: '1rem', fontSize: '0.9rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>map</span>
+                      Track on Map
+                    </button>
+                  )}
+                </div>
+
+                <div style={{ marginTop: '0.5rem' }}>
+                  {order.status === 'ASSIGNED' && (
+                    <button 
+                      className="btn btn-primary" 
+                      style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '0.95rem', fontWeight: 700, opacity: updating ? 0.7 : 1 }}
+                      onClick={() => handleStatusUpdate(order.id, 'PICKED_UP')}
+                      disabled={updating}
+                    >
+                      {updating ? 'Updating...' : 'I have picked up the package'}
+                    </button>
+                  )}
+                  {order.status === 'PICKED_UP' && (
+                    <button 
+                      className="btn btn-primary" 
+                      style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '0.95rem', fontWeight: 700, background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', opacity: updating ? 0.7 : 1 }}
+                      onClick={() => initiateDelivery(order.id)}
+                      disabled={updating}
+                    >
+                      Enter Delivery PIN
+                    </button>
+                  )}
+                  {order.status === 'DELIVERED' && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'rgba(34, 197, 94, 0.1)', padding: '0.75rem', borderRadius: '1rem', color: '#22c55e', fontWeight: 700 }}>
+                      <span className="material-symbols-outlined">verified</span>
+                      Delivery Complete
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
           ))}
         </div>
