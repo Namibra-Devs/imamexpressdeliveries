@@ -14,6 +14,7 @@ interface Order {
   packageDescription?: string;
   status: string;
   price: number;
+  deliveryPin?: string;
   createdAt: string;
   rider?: {
     name: string;
@@ -151,6 +152,13 @@ const OrderHistory: React.FC = () => {
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Receiver Contact</p>
                     <p style={{ fontSize: '0.85rem', color: '#fff' }}>{order.receiverContact}</p>
                   </div>
+                  
+                  {['ASSIGNED', 'PICKED_UP'].includes(order.status) && order.deliveryPin && (
+                    <div style={{ marginBottom: '1rem', background: 'rgba(160, 32, 240, 0.1)', border: '1px dashed rgba(160, 32, 240, 0.3)', padding: '0.75rem', borderRadius: '0.75rem', textAlign: 'center' }}>
+                      <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.65rem', color: 'var(--primary-light)', textTransform: 'uppercase' }}>Delivery PIN (Give to Rider)</p>
+                      <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.2rem', color: '#fff' }}>{order.deliveryPin}</h4>
+                    </div>
+                  )}
 
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.75rem', borderRadius: '0.5rem', marginBottom: '1rem' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Delivery Assignment</p>

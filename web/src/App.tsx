@@ -20,6 +20,9 @@ import Analytics from './pages/admin/Analytics';
 import Help from './pages/admin/Help';
 import Settings from './pages/admin/Settings';
 import AssignedDeliveries from './pages/rider/AssignedDeliveries';
+import DashboardRider from './pages/rider/Dashboard';
+import EarningsRider from './pages/rider/Earnings';
+import ProfileRider from './pages/rider/Profile';
 import Profile from './pages/customer/Profile';
 import LandingPage from './pages/LandingPage';
 import AboutUs from './pages/public/AboutUs';
@@ -34,6 +37,7 @@ import InsuranceInfo from './pages/public/InsuranceInfo';
 import TopNavbar from './components/TopNavbar';
 import PublicLayout from './components/public/PublicLayout';
 import AdminLayout from './components/admin/AdminLayout';
+import RiderLayout from './components/rider/RiderLayout';
 import ScrollToTop from './components/ScrollToTop';
 
 const DefaultLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -93,11 +97,14 @@ const App: React.FC = () => {
       {/* Rider Routes */}
       <Route path="/rider/*" element={
         <ProtectedRoute allowedRoles={['RIDER']}>
-          <DefaultLayout>
-            <AssignedDeliveries />
-          </DefaultLayout>
+          <RiderLayout />
         </ProtectedRoute>
-      } />
+      }>
+        <Route index element={<DashboardRider />} />
+        <Route path="deliveries" element={<AssignedDeliveries />} />
+        <Route path="earnings" element={<EarningsRider />} />
+        <Route path="profile" element={<ProfileRider />} />
+      </Route>
 
       {/* Admin Routes */}
       <Route path="/admin" element={

@@ -13,6 +13,7 @@ interface Order {
   receiverContact: string;
   status: string;
   price: number;
+  deliveryPin?: string;
   createdAt: string;
 }
 
@@ -233,6 +234,13 @@ const Dashboard: React.FC = () => {
                         <p style={{ margin: 0, fontSize: '0.75rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.dropoffLocation}</p>
                       </div>
                     </div>
+                    
+                    {['ASSIGNED', 'PICKED_UP'].includes(order.status) && order.deliveryPin && (
+                      <div style={{ marginTop: '1rem', background: 'rgba(160, 32, 240, 0.1)', border: '1px dashed rgba(160, 32, 240, 0.3)', padding: '0.75rem', borderRadius: '0.75rem', textAlign: 'center' }}>
+                        <p style={{ margin: '0 0 0.25rem 0', fontSize: '0.65rem', color: 'var(--primary-light)', textTransform: 'uppercase' }}>Delivery PIN (Give to Rider)</p>
+                        <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.2rem', color: '#fff' }}>{order.deliveryPin}</h4>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

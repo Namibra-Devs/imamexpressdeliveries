@@ -72,6 +72,9 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<any>
     const distance = await getDistance(pickupLocation, dropoffLocation);
     const price = calculatePrice(distance, pricing.baseRate, pricing.perKmRate, multiplier);
 
+    // Generate random 4-digit PIN
+    const deliveryPin = Math.floor(1000 + Math.random() * 9000).toString();
+
     const order = await prisma.order.create({
       data: {
         pickupLocation,
@@ -82,7 +85,8 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<any>
         packageType,
         price,
         distance,
-        customerId
+        customerId,
+        deliveryPin
       }
     });
 

@@ -65,6 +65,7 @@ model Order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deliveryPin        String?
 }
 
 model PricingConfig {
