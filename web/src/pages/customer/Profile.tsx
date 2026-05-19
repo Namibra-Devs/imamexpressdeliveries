@@ -183,8 +183,23 @@ const Profile: React.FC = () => {
   };
 
   const leftContent = (
-    <div>
-      <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', marginTop: '0.8rem', color: '#fff' }}>My Profile</h2>
+    <div style={{ position: 'relative' }}>
+      <h2 style={{ 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 10, 
+        background: 'var(--bg-sidebar)', 
+        paddingTop: '1.5rem', 
+        paddingBottom: '1rem', 
+        marginTop: 0, 
+        marginBottom: '1.5rem', 
+        fontSize: '1.25rem', 
+        fontWeight: 600, 
+        color: '#fff',
+        borderBottom: '1px solid rgba(160, 32, 240, 0.1)'
+      }}>
+        My Profile
+      </h2>
       
       {loading ? (
         <div className="text-center text-muted" style={{ padding: '2rem' }}>Loading details...</div>
