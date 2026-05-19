@@ -40,6 +40,7 @@ const OrderHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [showMobileMap, setShowMobileMap] = useState(false);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
@@ -184,6 +185,27 @@ const OrderHistory: React.FC = () => {
                       </span>
                     </div>
                   </div>
+
+                  {/* Track on Map Button - Visible on Mobile screens only */}
+                  <button 
+                    type="button" 
+                    onClick={() => setShowMobileMap(true)}
+                    className="btn btn-primary mobile-only-inline"
+                    style={{ 
+                      width: '100%', 
+                      marginTop: '1.5rem', 
+                      borderRadius: '2rem', 
+                      padding: '0.8rem',
+                      display: 'none',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>map</span>
+                    Track Delivery on Map
+                  </button>
                 </div>
               )}
             </div>
@@ -256,10 +278,37 @@ const OrderHistory: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Back to List Floating Button - Mobile only */}
+      <button
+        onClick={() => setShowMobileMap(false)}
+        className="mobile-only-inline"
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'var(--bg-sidebar)',
+          color: '#fff',
+          padding: '0.8rem 1.5rem',
+          borderRadius: '2rem',
+          border: '1px solid var(--primary)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+          zIndex: 100,
+          display: 'none',
+          alignItems: 'center',
+          gap: '0.5rem',
+          fontWeight: 600,
+          cursor: 'pointer'
+        }}
+      >
+        <span className="material-symbols-outlined">list</span>
+        Back to Order List
+      </button>
     </div>
   );
 
-  return <AppLayout leftContent={leftContent} rightContent={rightContent} />;
+  return <AppLayout leftContent={leftContent} rightContent={rightContent} mobileLayout={showMobileMap ? 'full-right' : 'full-left'} />;
 };
 
 export default OrderHistory;

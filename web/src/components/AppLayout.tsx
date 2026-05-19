@@ -5,9 +5,16 @@ import BottomNav from './BottomNav';
 interface AppLayoutProps {
   leftContent: React.ReactNode;
   rightContent?: React.ReactNode;
+  overlayMode?: boolean;
+  mobileLayout?: 'split' | 'full-left' | 'full-right';
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
+const AppLayout: React.FC<AppLayoutProps> = ({ 
+  leftContent, 
+  rightContent, 
+  overlayMode = false,
+  mobileLayout = 'split'
+}) => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,7 +25,16 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
     <div className="app-shell-wrapper">
       {/* Top Navigation Bar - Solid Variant */}
       <header className="top-header">
-        <div className="top-header-left" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+        <div className="top-header-left" onClick={() => {
+          if (isAuthenticated && user) {
+            if (user.role === 'CUSTOMER') navigate('/customer');
+            else if (user.role === 'ADMIN') navigate('/admin');
+            else if (user.role === 'RIDER') navigate('/rider');
+            else navigate('/');
+          } else {
+            navigate('/');
+          }
+        }} style={{ cursor: 'pointer' }}>
           <div style={{ background: 'var(--primary)', color: 'white', padding: '0.6rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', boxShadow: '0 4px 12px rgba(160, 32, 240, 0.3)' }}>
             <span className="material-symbols-outlined" style={{ fontSize: '1.75rem' }}>local_shipping</span>
           </div>
@@ -48,7 +64,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
         </div>
       </header>
 
-      <div className={`app-shell ${isAuthPage ? 'auth-shell' : ''}`}>
+      <div className={`app-shell ${isAuthPage ? 'auth-shell' : ''} ${overlayMode ? 'map-overlay-mode' : ''} mobile-layout-${mobileLayout}`}>
         <div className="app-sidebar">
           
           <div className="app-sidebar-content">
@@ -78,13 +94,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ leftContent, rightContent }) => {
           {rightContent || (
             <div className="empty-main-content"></div>
           )}
-          
-          {/* Render Bottom Nav for Customers - Now inside app-main */}
-          {isAuthenticated && user?.role === 'CUSTOMER' && (
-            <BottomNav />
-          )}
         </div>
       </div>
+
+      {/* Render Bottom Nav for Customers at wrapper level to prevent mobile panel hiding */}
+      {isAuthenticated && user?.role === 'CUSTOMER' && !overlayMode && (
+        <BottomNav />
+      )}
     </div>
   );
 };

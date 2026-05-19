@@ -402,7 +402,7 @@ const Profile: React.FC = () => {
     </div>
   );
 
-  return <AppLayout leftContent={leftContent} rightContent={rightContent} />;
+  return <AppLayout leftContent={leftContent} rightContent={rightContent} mobileLayout="full-left" />;
 };
 
 export default Profile;

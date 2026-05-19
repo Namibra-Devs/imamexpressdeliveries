@@ -9,6 +9,7 @@ import VerifyEmail from './pages/auth/VerifyEmail';
 import ResendVerification from './pages/auth/ResendVerification';
 import CreateOrder from './pages/customer/CreateOrder';
 import OrderHistory from './pages/customer/OrderHistory';
+import CustomerDashboard from './pages/customer/Dashboard';
 import Dashboard from './pages/admin/Dashboard';
 import AdminProfile from './pages/admin/Profile';
 import OrderManagement from './pages/admin/OrderManagement';
@@ -67,7 +68,8 @@ const App: React.FC = () => {
       <Route path="/customer/*" element={
         <ProtectedRoute allowedRoles={['CUSTOMER']}>
           <Routes>
-            <Route path="" element={<CreateOrder />} />
+            <Route path="" element={<CustomerDashboard />} />
+            <Route path="create-order" element={<CreateOrder />} />
             <Route path="history" element={<OrderHistory />} />
             <Route path="profile" element={<Profile />} />
           </Routes>

@@ -15,7 +15,7 @@ const BottomNav: React.FC = () => {
   const navItems = [
     { label: 'Home', icon: 'home', path: '/customer' },
     { label: 'History', icon: 'receipt_long', path: '/customer/history' },
-    { label: 'Order', icon: 'add_circle', path: '/customer', isPrimary: true },
+    { label: 'Order', icon: 'add_circle', path: '/customer/create-order', isPrimary: true },
     { label: 'Profile', icon: 'person', path: '/customer/profile' },
   ];
 

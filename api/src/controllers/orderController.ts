@@ -15,6 +15,7 @@ const getMultiplier = (packageType: string, pricing: any) => {
     case 'documents': return pricing.documentMultiplier;
     case 'food': return pricing.foodMultiplier;
     case 'electronics': return pricing.electronicsMultiplier;
+    case 'fragile': return pricing.fragileMultiplier;
     case 'clothing': return pricing.otherMultiplier;
     case 'other': return pricing.otherMultiplier;
     default: return 1.0;
