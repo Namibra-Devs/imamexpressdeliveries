@@ -15,13 +15,13 @@ const Contact: React.FC = () => {
   return (
     <div style={{ padding: '6rem 5%', position: 'relative' }}>
       <div style={{ position: 'absolute', top: '10%', right: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(160, 32, 240, 0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
-      
+
       <motion.div initial="hidden" animate="visible" variants={staggerContainer} style={{ maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <motion.div variants={fadeInUp} style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h1 style={{ fontSize: '3.5rem', fontWeight: 800, marginBottom: '1rem' }} className="text-gradient">Get in Touch</h1>
           <p style={{ fontSize: '1.15rem', color: 'var(--text-muted)' }}>We are available 24/7 to assist with your logistics needs.</p>
         </motion.div>
-        
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }} className="mobile-column-layout">
           <motion.div variants={fadeInUp} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -50,15 +50,15 @@ const Contact: React.FC = () => {
           <motion.div variants={fadeInUp}>
             <form style={{ background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem' }}>Send a Message</h3>
-              
+
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Full Name</label>
-                <input type="text" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="John Doe" />
+                <input type="text" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="Hamza Ibrahim" />
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Email Address</label>
-                <input type="email" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="john@example.com" />
+                <input type="email" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="hamza@example.com" />
               </div>
 
               <div style={{ marginBottom: '2rem' }}>

@@ -166,7 +166,7 @@ const CreateOrder: React.FC = () => {
   }, [step]);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (step < 4) {
       nextStep();
       return;
@@ -337,7 +337,7 @@ const CreateOrder: React.FC = () => {
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ flex: 1 }}>
                 <label className="input-label" style={{ fontSize: '0.75rem', textTransform: 'uppercase' }}>Receiver's Name</label>
-                <input type="text" className="input-field" name="receiverName" placeholder="Jane Doe" value={formData.receiverName} onChange={handleChange} required />
+                <input type="text" className="input-field" name="receiverName" placeholder="Hamza Ibrahim" value={formData.receiverName} onChange={handleChange} required />
                 {errors.receiverName && <p style={{ color: 'var(--danger)', fontSize: '0.7rem', marginTop: '0.4rem' }}>{errors.receiverName}</p>}
               </div>
               <div style={{ flex: 1 }}>
@@ -417,19 +417,19 @@ const CreateOrder: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {priceEstimate !== null && (
-               <div style={{ background: 'rgba(160, 32, 240, 0.1)', border: '1px solid rgba(160, 32, 240, 0.3)', borderRadius: '1rem', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                 <div>
-                   <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Price</p>
-                   <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#fff' }}>GH₵{priceEstimate.toFixed(2)}</h3>
-                 </div>
-                 {priceMultiplier && priceMultiplier > 1.0 && (
-                    <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '4px 8px', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: 700 }}>
-                      x{priceMultiplier} Rate
-                    </span>
-                 )}
-               </div>
+              <div style={{ background: 'rgba(160, 32, 240, 0.1)', border: '1px solid rgba(160, 32, 240, 0.3)', borderRadius: '1rem', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Price</p>
+                  <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#fff' }}>GH₵{priceEstimate.toFixed(2)}</h3>
+                </div>
+                {priceMultiplier && priceMultiplier > 1.0 && (
+                  <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '4px 8px', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: 700 }}>
+                    x{priceMultiplier} Rate
+                  </span>
+                )}
+              </div>
             )}
           </motion.div>
         );
@@ -473,18 +473,18 @@ const CreateOrder: React.FC = () => {
               Next Step
             </button>
           ) : (
-            <button 
-              type="submit" 
-              className="btn btn-primary" 
-              style={{ 
-                flex: 2, 
-                borderRadius: '2rem', 
-                padding: '1rem', 
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{
+                flex: 2,
+                borderRadius: '2rem',
+                padding: '1rem',
                 background: !canSubmit ? 'rgba(160, 32, 240, 0.4)' : 'var(--primary)',
                 borderColor: !canSubmit ? 'transparent' : 'var(--primary)',
                 cursor: !canSubmit ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease'
-              }} 
+              }}
               disabled={loading || !canSubmit}
             >
               {loading ? 'Processing...' : !canSubmit ? 'Reviewing (1s)...' : 'Confirm Order'}

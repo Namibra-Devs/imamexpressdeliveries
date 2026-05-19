@@ -53,8 +53,8 @@ const ResendVerification: React.FC = () => {
       geocoder.geocode({ location: userLocation }, (results, status) => {
         if (status === 'OK' && results && results[0]) {
           const addressComponents = results[0].address_components;
-          const city = addressComponents.find(c => c.types.includes('locality'))?.long_name || 
-                       addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
+          const city = addressComponents.find(c => c.types.includes('locality'))?.long_name ||
+            addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
           setLocationName(city || 'Unknown Location');
         }
       });
@@ -83,14 +83,14 @@ const ResendVerification: React.FC = () => {
           <h2 className="text-gradient" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Resend Email</h2>
           <p className="text-muted">Enter your email to receive a new verification link</p>
         </div>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
-            <input 
-              type="email" 
-              className="input-field" 
-              placeholder="john@example.com"
+            <input
+              type="email"
+              className="input-field"
+              placeholder="hamza@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

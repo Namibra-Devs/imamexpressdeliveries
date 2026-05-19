@@ -20,15 +20,15 @@ const mapOptions = {
 
 const Register: React.FC = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({ 
-    name: '', 
-    email: '', 
-    phone: '', 
-    password: '', 
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
     confirmPassword: '',
-    homeAddress: '', 
+    homeAddress: '',
     workAddress: '',
-    role: 'CUSTOMER' 
+    role: 'CUSTOMER'
   });
   const [loading, setLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
@@ -65,8 +65,8 @@ const Register: React.FC = () => {
       geocoder.geocode({ location: userLocation }, (results, status) => {
         if (status === 'OK' && results && results[0]) {
           const addressComponents = results[0].address_components;
-          const city = addressComponents.find(c => c.types.includes('locality'))?.long_name || 
-                       addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
+          const city = addressComponents.find(c => c.types.includes('locality'))?.long_name ||
+            addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
           setLocationName(city || 'Unknown Location');
         }
       });
@@ -132,23 +132,23 @@ const Register: React.FC = () => {
         <h2 className="text-gradient" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Create Account</h2>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           {[1, 2, 3].map((s) => (
-            <div key={s} style={{ 
-              width: '40px', 
-              height: '4px', 
-              borderRadius: '2px', 
-              background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)' 
+            <div key={s} style={{
+              width: '40px',
+              height: '4px',
+              borderRadius: '2px',
+              background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)'
             }} />
           ))}
         </div>
         <p className="text-muted">Step {step} of 3</p>
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         {step === 1 && (
           <div className="step-content animate-in">
             <div className="input-group">
               <label className="input-label" style={{ color: '#fff' }}>Full Name</label>
-              <input type="text" className="input-field" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required />
+              <input type="text" className="input-field" name="name" placeholder="Hamza Ali" value={formData.name} onChange={handleChange} required />
             </div>
             <div className="input-group">
               <label className="input-label" style={{ color: '#fff' }}>Phone Number</label>
@@ -156,7 +156,7 @@ const Register: React.FC = () => {
             </div>
             <div className="input-group">
               <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
-              <input type="email" className="input-field" name="email" placeholder="john@example.com" value={formData.email} onChange={handleChange} required />
+              <input type="email" className="input-field" name="email" placeholder="hamza@example.com" value={formData.email} onChange={handleChange} required />
             </div>
             <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', borderRadius: '2rem', padding: '1.1rem' }} onClick={nextStep}>
               Continue to Step 2
