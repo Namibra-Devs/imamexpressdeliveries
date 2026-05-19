@@ -244,7 +244,7 @@ const Dashboard: React.FC = () => {
   );
 
   const rightContent = (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', padding: '2.5rem', color: '#fff', boxSizing: 'border-box', background: 'radial-gradient(circle at top right, rgba(160, 32, 240, 0.15) 0%, #1e0e1a 100%)' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', padding: '2.5rem', color: '#fff', boxSizing: 'border-box', background: '#1e0e1a' }}>
       <div style={{ maxWidth: '800px', width: '100%', margin: 'auto' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }} className="text-gradient">Imam Express Delivery</h1>
         <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '3rem' }}>Fast, reliable, and premium logistics at the tip of your fingers.</p>
