@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 const AdminLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -38,7 +39,7 @@ const AdminLayout: React.FC = () => {
         }}>
           {sidebarOpen && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span className="material-symbols-outlined" style={{ color: 'var(--primary)', fontSize: '1.8rem' }}>local_shipping</span>
+              <img src={logo} alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover' }} />
               <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#fff', letterSpacing: '-0.5px' }}>Imam<span style={{ color: 'var(--primary)' }}>Express</span></span>
             </div>
           )}

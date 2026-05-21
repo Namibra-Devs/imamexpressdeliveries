@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../../assets/logo.png';
 
 const RiderLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -41,15 +42,7 @@ const RiderLayout: React.FC = () => {
         alignItems: 'center'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ 
-            width: '36px', height: '36px', 
-            borderRadius: '50%', 
-            background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontWeight: 800, fontSize: '1.2rem'
-          }}>
-            IE
-          </div>
+          <img src={logo} alt="Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover' }} />
           <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '0.5px' }}>Rider Portal</span>
         </div>
         

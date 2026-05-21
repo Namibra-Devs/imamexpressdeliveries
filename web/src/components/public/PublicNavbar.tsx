@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import logo from '../../assets/logo.png';
 
 const PublicNavbar: React.FC = () => {
   const navigate = useNavigate();
@@ -31,9 +32,7 @@ const PublicNavbar: React.FC = () => {
       zIndex: 100
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={() => navigate('/')}>
-        <div style={{ background: 'var(--primary)', color: 'white', padding: '0.5rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', boxShadow: '0 4px 12px rgba(160, 32, 240, 0.2)' }}>
-          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>local_shipping</span>
-        </div>
+        <img src={logo} alt="Logo" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
         <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.5px' }} className="text-gradient">Imam Express</span>
       </div>
 

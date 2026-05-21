@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
 import BottomNav from './BottomNav';
+import logo from '../assets/logo.png';
 
 interface AppLayoutProps {
   leftContent: React.ReactNode;
@@ -51,9 +52,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
             navigate('/');
           }
         }} style={{ cursor: 'pointer' }}>
-          <div style={{ background: 'var(--primary)', color: 'white', padding: '0.6rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', boxShadow: '0 4px 12px rgba(160, 32, 240, 0.3)' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '1.75rem' }}>local_shipping</span>
-          </div>
+          <img src={logo} alt="Logo" style={{ width: '44px', height: '44px', borderRadius: '8px', objectFit: 'cover' }} />
           <h1 className="top-logo-text">
             Imam Express
           </h1>
