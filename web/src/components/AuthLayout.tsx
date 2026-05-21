@@ -71,7 +71,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, locationName }) => {
           }
           
           .google-input:focus ~ .google-input-label,
-          .google-input:not(:placeholder-shown) ~ .google-input-label {
+          .google-input:not(:placeholder-shown) ~ .google-input-label,
+          .google-input-group.has-value .google-input-label,
+          .google-input-group:focus-within .google-input-label {
             top: -0.5rem;
             font-size: 0.75rem;
             color: var(--primary);

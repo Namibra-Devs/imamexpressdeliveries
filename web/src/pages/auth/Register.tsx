@@ -73,10 +73,23 @@ const Register: React.FC = () => {
     }
   };
 
+  const ghanaPhoneRegex = /^(?:\+233|0)[235][0-9]{8}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordSpecialRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
   const nextStep = () => {
     if (step === 1) {
       if (!formData.name || !formData.email || !formData.phone) {
         toast.error('Please fill required fields');
+        return;
+      }
+      if (!emailRegex.test(formData.email)) {
+        toast.error('Please enter a valid email address');
+        return;
+      }
+      const cleanedPhone = formData.phone.replace(/\s+/g, '');
+      if (!ghanaPhoneRegex.test(cleanedPhone)) {
+        toast.error('Phone number must be a valid Ghana number');
         return;
       }
     }
@@ -87,6 +100,14 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+    if (!passwordSpecialRegex.test(formData.password)) {
+      toast.error('Password must contain at least one special character');
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -156,7 +177,7 @@ const Register: React.FC = () => {
 
           {step === 2 && (
             <div className="animate-in" style={{ display: 'flex', flexDirection: 'column' }}>
-              <div className="google-input-group">
+              <div className={`google-input-group ${formData.homeAddress ? 'has-value' : ''}`}>
                 {isLoaded ? (
                   <Autocomplete onLoad={setHomeAutocomplete} onPlaceChanged={onHomePlaceChanged}>
                     <input type="text" className="google-input" name="homeAddress" placeholder=" " value={formData.homeAddress} onChange={handleChange} />
@@ -166,7 +187,7 @@ const Register: React.FC = () => {
                 )}
                 <label className="google-input-label">Home Address (Optional)</label>
               </div>
-              <div className="google-input-group">
+              <div className={`google-input-group ${formData.workAddress ? 'has-value' : ''}`}>
                 {isLoaded ? (
                   <Autocomplete onLoad={setWorkAutocomplete} onPlaceChanged={onWorkPlaceChanged}>
                     <input type="text" className="google-input" name="workAddress" placeholder=" " value={formData.workAddress} onChange={handleChange} />
