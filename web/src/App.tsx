@@ -7,6 +7,8 @@ import Register from './pages/auth/Register';
 import RegisterSuccess from './pages/auth/RegisterSuccess';
 import VerifyEmail from './pages/auth/VerifyEmail';
 import ResendVerification from './pages/auth/ResendVerification';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import CreateOrder from './pages/customer/CreateOrder';
 import OrderHistory from './pages/customer/OrderHistory';
 import CustomerDashboard from './pages/customer/Dashboard';
@@ -70,6 +72,8 @@ const App: React.FC = () => {
       <Route path="/register-success" element={<RegisterSuccess />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/resend-verification" element={<ResendVerification />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />

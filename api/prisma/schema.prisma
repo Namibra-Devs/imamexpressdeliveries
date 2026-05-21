@@ -36,6 +36,8 @@ model User {
   isSuspended Boolean @default(false)
   verificationToken String?
   verificationTokenExpiresAt DateTime?
+  resetPasswordToken String?
+  resetPasswordExpiresAt DateTime?
   profileImage String?
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
