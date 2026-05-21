@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const PublicNavbar: React.FC = () => {
   const navigate = useNavigate();
   const auth = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const isAuthenticated = auth?.isAuthenticated || false;
 
   const handleCtaClick = () => {
@@ -21,8 +23,8 @@ const PublicNavbar: React.FC = () => {
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: '1.5rem 5%',
-      borderBottom: '1px solid rgba(255,255,255,0.03)',
-      background: 'rgba(22, 22, 28, 0.85)',
+      borderBottom: '1px solid var(--border-color)',
+      background: 'var(--nav-bg)',
       backdropFilter: 'blur(20px)',
       position: 'sticky',
       top: 0,
@@ -36,6 +38,23 @@ const PublicNavbar: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text-main)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          aria-label="Toggle Theme"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>
+            {theme === 'light' ? 'dark_mode' : 'light_mode'}
+          </span>
+        </button>
         {isAuthenticated ? (
           <button 
             onClick={handleCtaClick}

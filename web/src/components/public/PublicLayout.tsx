@@ -7,10 +7,11 @@ const PublicLayout: React.FC = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: '#16161c',
-      color: '#fff', 
+      background: 'var(--bg-base)',
+      color: 'var(--text-main)', 
       fontFamily: "'Outfit', sans-serif", 
-      position: 'relative'
+      position: 'relative',
+      transition: 'background 0.3s, color 0.3s'
     }}>
       <PublicNavbar />
       <main>

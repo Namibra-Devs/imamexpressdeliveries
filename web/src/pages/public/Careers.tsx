@@ -30,7 +30,7 @@ const Careers: React.FC = () => {
             { title: 'Weekly Payouts', desc: 'Get paid on time, directly to your mobile money or bank.', icon: 'payments' },
             { title: 'Insurance Coverage', desc: 'Active dispatch insurance covering you on duty.', icon: 'health_and_safety' }
           ].map((benefit, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+            <div key={i} style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)', textAlign: 'center' }}>
               <div style={{ width: '64px', height: '64px', borderRadius: '1.25rem', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
                 <span className="material-symbols-outlined" style={{ fontSize: '2rem' }}>{benefit.icon}</span>
               </div>

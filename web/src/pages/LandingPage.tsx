@@ -156,8 +156,8 @@ const LandingPage: React.FC = () => {
 	return (
 		<div style={{
 			minHeight: '100vh',
-			background: '#16161c', // Softer, lighter dark background
-			color: '#fff',
+			background: 'transparent', // Softer, lighter dark background
+			color: 'var(--text-main)',
 			fontFamily: "'Outfit', sans-serif",
 			position: 'relative'
 		}}>
@@ -208,9 +208,9 @@ const LandingPage: React.FC = () => {
 								position: 'absolute',
 								top: '2rem',
 								left: '5%',
-								background: 'rgba(255, 255, 255, 0.05)',
+								background: 'var(--border-color)',
 								backdropFilter: 'blur(10px)',
-								border: '1px solid rgba(255, 255, 255, 0.1)',
+								border: '1px solid var(--border-color)',
 								borderRadius: '2rem',
 								padding: '0.75rem 1.25rem',
 								display: 'flex',
@@ -286,9 +286,9 @@ const LandingPage: React.FC = () => {
 								element?.scrollIntoView({ behavior: 'smooth' });
 							}}
 							style={{
-								background: 'rgba(255,255,255,0.03)',
-								border: '1px solid rgba(255,255,255,0.05)',
-								color: '#fff',
+								background: 'var(--border-color)',
+								border: '1px solid var(--border-color)',
+								color: 'var(--text-main)',
 								padding: '1rem 2rem',
 								borderRadius: '2rem',
 								fontSize: '1rem',
@@ -312,8 +312,8 @@ const LandingPage: React.FC = () => {
 					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
 				>
 					<div style={{
-						background: 'rgba(255, 255, 255, 0.02)',
-						border: '1px solid rgba(255, 255, 255, 0.04)',
+						background: 'var(--border-color)',
+						border: '1px solid var(--border-color)',
 						borderRadius: '2rem',
 						padding: '2.5rem',
 						boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
@@ -330,8 +330,8 @@ const LandingPage: React.FC = () => {
 								onClick={startSimulation}
 								disabled={isSimulating}
 								style={{
-									background: isSimulating ? 'rgba(255,255,255,0.05)' : 'var(--primary)',
-									color: '#fff',
+									background: isSimulating ? 'var(--border-color)' : 'var(--primary)',
+									color: 'var(--text-main)',
 									border: 'none',
 									borderRadius: '2rem',
 									padding: '0.5rem 1.25rem',
@@ -357,7 +357,7 @@ const LandingPage: React.FC = () => {
 								left: '20px',
 								right: '20px',
 								height: '4px',
-								background: 'rgba(255,255,255,0.05)',
+								background: 'var(--border-color)',
 								zIndex: 0
 							}} />
 							<div style={{
@@ -377,12 +377,12 @@ const LandingPage: React.FC = () => {
 										width: '44px',
 										height: '44px',
 										borderRadius: '50%',
-										background: idx <= transitStep ? 'var(--primary)' : '#262630',
-										color: '#fff',
+										background: idx <= transitStep ? 'var(--primary)' : 'var(--bg-surface)',
+										color: idx <= transitStep ? '#ffffff' : 'var(--text-main)',
 										display: 'flex',
 										alignItems: 'center',
 										justifyContent: 'center',
-										border: idx <= transitStep ? '3px solid #16161c' : '3px solid rgba(255,255,255,0.05)',
+										border: idx <= transitStep ? '3px solid var(--bg-base)' : '3px solid var(--border-color)',
 										transition: 'all 0.4s ease'
 									}}>
 										<span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>{phase.icon}</span>
@@ -396,8 +396,8 @@ const LandingPage: React.FC = () => {
 
 						{/* Details Bubble */}
 						<div style={{
-							background: 'rgba(255,255,255,0.02)',
-							border: '1px solid rgba(255,255,255,0.04)',
+							background: 'var(--border-color)',
+							border: '1px solid var(--border-color)',
 							borderRadius: '1.25rem',
 							padding: '1.5rem',
 							textAlign: 'center',
@@ -424,9 +424,9 @@ const LandingPage: React.FC = () => {
 			{/* Trusted By / Partners Marquee */}
 			<section style={{
 				padding: '3rem 0',
-				borderTop: '1px solid rgba(255,255,255,0.03)',
-				borderBottom: '1px solid rgba(255,255,255,0.03)',
-				background: 'rgba(255,255,255,0.01)',
+				borderTop: '1px solid var(--border-color)',
+				borderBottom: '1px solid var(--border-color)',
+				background: 'var(--border-color)',
 				overflow: 'hidden',
 				position: 'relative'
 			}}>
@@ -468,7 +468,7 @@ const LandingPage: React.FC = () => {
 							onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.filter = 'grayscale(0%)'; }}
 							onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.6'; e.currentTarget.style.filter = 'grayscale(100%)'; }}
 						>
-							<span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>{partner}</span>
+							<span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>{partner}</span>
 						</div>
 					))}
 				</div>
@@ -565,8 +565,7 @@ const LandingPage: React.FC = () => {
 							width: '100%',
 							maxWidth: '480px',
 							borderRadius: '2rem',
-							boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
-							border: '1px solid rgba(255,255,255,0.04)',
+							border: '1px solid var(--border-color)',
 							position: 'relative',
 							zIndex: 1
 						}}
@@ -581,7 +580,7 @@ const LandingPage: React.FC = () => {
 					<p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
 						Our expansive transit coordinate grid ensures complete shipping solutions covering the entire Greater Accra area. From centralized business hubs to outer residential suburbs, our couriers match coordinates to ensure swift logistics.
 					</p>
-					<p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: '2.5rem' }}>
+					<p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '2.5rem' }}>
 						We monitor rider locations with high accuracy, dispatching the nearest fleet member to avoid traffic bottlenecks and ensure deliveries within standard record-breaking periods.
 					</p>
 					<button
@@ -632,8 +631,7 @@ const LandingPage: React.FC = () => {
 							width: '100%',
 							maxWidth: '440px',
 							borderRadius: '2rem',
-							boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
-							border: '1px solid rgba(255,255,255,0.04)',
+							border: '1px solid var(--border-color)',
 							position: 'relative',
 							zIndex: 1
 						}}
@@ -647,11 +645,10 @@ const LandingPage: React.FC = () => {
 					</div>
 
 					<form onSubmit={handleCalculatePrice} style={{
-						background: 'rgba(255,255,255,0.02)',
-						border: '1px solid rgba(255,255,255,0.04)',
+						background: 'var(--border-color)',
+						border: '1px solid var(--border-color)',
 						borderRadius: '2rem',
 						padding: '2.5rem',
-						boxShadow: '0 20px 45px rgba(0,0,0,0.3)',
 						position: 'relative',
 						overflow: 'hidden'
 					}}>
@@ -664,17 +661,17 @@ const LandingPage: React.FC = () => {
 									onChange={(e) => setBookingDate(e.target.value)}
 									style={{
 										width: '100%',
-										background: 'rgba(255,255,255,0.03)',
-										border: '1px solid rgba(255,255,255,0.08)',
+										background: 'var(--border-color)',
+										border: '1px solid var(--border-color)',
 										borderRadius: '1rem',
 										padding: '0.8rem 1rem',
-										color: '#fff',
+										color: 'var(--text-main)',
 										outline: 'none',
 										fontSize: '0.85rem',
 										transition: 'border-color 0.3s'
 									}}
 									onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
-									onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+									onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
 									required
 								/>
 							</div>
@@ -685,11 +682,11 @@ const LandingPage: React.FC = () => {
 									onChange={(e) => setParcelType(e.target.value)}
 									style={{
 										width: '100%',
-										background: '#23232a',
-										border: '1px solid rgba(255,255,255,0.08)',
+										background: 'var(--bg-surface)',
+										border: '1px solid var(--border-color)',
 										borderRadius: '1rem',
 										padding: '0.8rem 1rem',
-										color: '#fff',
+										color: 'var(--text-main)',
 										outline: 'none',
 										fontSize: '0.85rem'
 									}}
@@ -710,11 +707,11 @@ const LandingPage: React.FC = () => {
 									onChange={(e) => setFromLocation(e.target.value)}
 									style={{
 										width: '100%',
-										background: '#23232a',
-										border: '1px solid rgba(255,255,255,0.08)',
+										background: 'var(--bg-surface)',
+										border: '1px solid var(--border-color)',
 										borderRadius: '1rem',
 										padding: '0.8rem 1rem',
-										color: '#fff',
+										color: 'var(--text-main)',
 										outline: 'none',
 										fontSize: '0.85rem'
 									}}
@@ -733,11 +730,11 @@ const LandingPage: React.FC = () => {
 									onChange={(e) => setToLocation(e.target.value)}
 									style={{
 										width: '100%',
-										background: '#23232a',
-										border: '1px solid rgba(255,255,255,0.08)',
+										background: 'var(--bg-surface)',
+										border: '1px solid var(--border-color)',
 										borderRadius: '1rem',
 										padding: '0.8rem 1rem',
-										color: '#fff',
+										color: 'var(--text-main)',
 										outline: 'none',
 										fontSize: '0.85rem'
 									}}
@@ -788,7 +785,7 @@ const LandingPage: React.FC = () => {
 									}}
 								>
 									<span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '1px' }}>Estimated Delivery Cost</span>
-									<div style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginTop: '0.25rem' }}>
+									<div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '0.25rem' }}>
 										GH₵ {calculatedPrice.toFixed(2)}
 									</div>
 									<p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>Actual pricing matches distance details upon final rider dispatch check.</p>
@@ -825,8 +822,8 @@ const LandingPage: React.FC = () => {
 				}} className="mobile-column-layout">
 					{testimonials.map((t, i) => (
 						<motion.div key={i} variants={fadeInUp} style={{
-							background: 'rgba(255,255,255,0.02)',
-							border: '1px solid rgba(255,255,255,0.04)',
+							background: 'var(--border-color)',
+							border: '1px solid var(--border-color)',
 							borderRadius: '2rem',
 							padding: '2.5rem',
 							position: 'relative'
@@ -834,7 +831,7 @@ const LandingPage: React.FC = () => {
 							<div style={{ display: 'flex', gap: '0.25rem', color: '#eab308', marginBottom: '1.5rem' }}>
 								{[1, 2, 3, 4, 5].map(star => <span key={star} className="material-symbols-outlined" style={{ fontSize: '1.1rem', fontVariationSettings: "'FILL' 1" }}>star</span>)}
 							</div>
-							<p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, marginBottom: '2rem', fontStyle: 'italic' }}>"{t.text}"</p>
+							<p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '2rem', fontStyle: 'italic' }}>"{t.text}"</p>
 							<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
 								<div style={{ width: '45px', height: '45px', borderRadius: '50%', background: 'rgba(160, 32, 240, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-light)', fontWeight: 700 }}>
 									{t.name.charAt(0)}
@@ -871,8 +868,8 @@ const LandingPage: React.FC = () => {
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 					{faqs.map((faq, i) => (
 						<motion.div key={i} variants={fadeInUp} style={{
-							background: 'rgba(255,255,255,0.02)',
-							border: '1px solid rgba(255,255,255,0.04)',
+							background: 'var(--border-color)',
+							border: '1px solid var(--border-color)',
 							borderRadius: '1.25rem',
 							overflow: 'hidden'
 						}}>
@@ -883,7 +880,7 @@ const LandingPage: React.FC = () => {
 									padding: '1.5rem',
 									background: 'transparent',
 									border: 'none',
-									color: '#fff',
+									color: 'var(--text-main)',
 									display: 'flex',
 									justifyContent: 'space-between',
 									alignItems: 'center',
@@ -951,11 +948,11 @@ const LandingPage: React.FC = () => {
 							<button style={{
 								background: '#fff', color: '#000', padding: '0.75rem 1.5rem', borderRadius: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: 'none', cursor: 'pointer', fontWeight: 700
 							}}>
-								<span className="material-symbols-outlined">apple</span>
+								<span className="material-symbols-outlined">iOS</span>
 								App Store
 							</button>
 							<button style={{
-								background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontWeight: 700
+								background: 'var(--border-color)', color: 'var(--text-main)', padding: '0.75rem 1.5rem', borderRadius: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--border-color)', cursor: 'pointer', fontWeight: 700
 							}}>
 								<span className="material-symbols-outlined">android</span>
 								Google Play

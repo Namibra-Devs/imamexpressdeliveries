@@ -26,9 +26,9 @@ const PublicFooter: React.FC = () => {
 
   return (
     <footer style={{
-      borderTop: '1px solid rgba(255,255,255,0.05)',
+      borderTop: '1px solid var(--border-color)',
       padding: '5rem 5% 2rem 5%',
-      background: '#0e0e12',
+      background: 'var(--bg-surface)',
       marginTop: '6rem'
     }}>
       <div style={{
@@ -51,15 +51,15 @@ const PublicFooter: React.FC = () => {
           </p>
           <div style={{ display: 'flex', gap: '1rem' }}>
             {['public', 'share', 'mail'].map((icon, i) => (
-              <div key={i} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.3s' }} className="hover-bg-light">
-                <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: '#fff' }}>{icon}</span>
+              <div key={i} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.3s' }} className="hover-bg-light">
+                <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: 'var(--text-main)' }}>{icon}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: '#fff' }}>Company</h4>
+          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Company</h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <li><Link to="/about" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} className="hover-light">About Us</Link></li>
             <li><Link to="/careers" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} className="hover-light">Careers</Link></li>
@@ -69,7 +69,7 @@ const PublicFooter: React.FC = () => {
         </div>
 
         <div>
-          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: '#fff' }}>Legal</h4>
+          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Legal</h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <li><Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} className="hover-light">Terms of Service</Link></li>
             <li><Link to="/privacy" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} className="hover-light">Privacy Policy</Link></li>
@@ -79,7 +79,7 @@ const PublicFooter: React.FC = () => {
         </div>
 
         <div>
-          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: '#fff' }}>Subscribe to Newsletter</h4>
+          <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1.5rem', color: 'var(--text-main)' }}>Subscribe to Newsletter</h4>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Get the latest updates on new service areas and features.</p>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <input 
@@ -87,12 +87,12 @@ const PublicFooter: React.FC = () => {
               placeholder="Email address" 
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
-              style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1rem', padding: '0.75rem 1rem', color: '#fff', outline: 'none', fontSize: '0.85rem' }} 
+              style={{ flex: 1, background: 'var(--glass-bg)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '0.75rem 1rem', color: 'var(--text-main)', outline: 'none', fontSize: '0.85rem' }} 
             />
             <button 
               onClick={handleSubscribe}
               disabled={isSubscribing}
-              style={{ background: isSubscribing ? 'gray' : 'var(--primary)', border: 'none', borderRadius: '1rem', padding: '0 1.25rem', color: '#fff', cursor: isSubscribing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ background: isSubscribing ? 'gray' : 'var(--primary)', border: 'none', borderRadius: '1rem', padding: '0 1.25rem', color: '#fff', cursor: isSubscribing ? 'not-allowed' : 'display', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               {isSubscribing ? <span style={{ fontSize: '0.8rem' }}>...</span> : <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>send</span>}
             </button>
@@ -100,8 +100,8 @@ const PublicFooter: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '2rem' }}>
-        <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+      <div style={{ textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
           © {new Date().getFullYear()} Imam Express Deliveries Ltd. All rights reserved. Designed with precision.
         </p>
       </div>

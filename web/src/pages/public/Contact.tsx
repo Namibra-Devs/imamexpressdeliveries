@@ -24,7 +24,7 @@ const Contact: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }} className="mobile-column-layout">
           <motion.div variants={fadeInUp} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ background: 'var(--glass-bg)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(160, 32, 240, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-light)' }}>
                 <span className="material-symbols-outlined" style={{ fontSize: '2rem' }}>support_agent</span>
               </div>
@@ -35,7 +35,7 @@ const Contact: React.FC = () => {
               </div>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ background: 'var(--glass-bg)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
                 <span className="material-symbols-outlined" style={{ fontSize: '2rem' }}>location_on</span>
               </div>
@@ -48,22 +48,22 @@ const Contact: React.FC = () => {
           </motion.div>
 
           <motion.div variants={fadeInUp}>
-            <form style={{ background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <form style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)' }}>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem' }}>Send a Message</h3>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Full Name</label>
-                <input type="text" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="Hamza Ibrahim" />
+                <input type="text" style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} placeholder="Hamza Ibrahim" />
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Email Address</label>
-                <input type="email" style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none' }} placeholder="hamza@example.com" />
+                <input type="email" style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} placeholder="hamza@example.com" />
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Message</label>
-                <textarea rows={4} style={{ width: '100%', background: '#23232a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem', color: '#fff', outline: 'none', resize: 'none' }} placeholder="How can we help?"></textarea>
+                <textarea rows={4} style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none', resize: 'none' }} placeholder="How can we help?"></textarea>
               </div>
 
               <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '1rem', fontWeight: 700 }}>

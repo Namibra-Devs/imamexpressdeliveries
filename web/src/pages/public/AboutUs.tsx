@@ -26,12 +26,12 @@ const AboutUs: React.FC = () => {
         </motion.p>
         
         <motion.div variants={fadeInUp} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '4rem' }}>
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)' }}>
             <span className="material-symbols-outlined" style={{ fontSize: '2.5rem', color: 'var(--primary-light)', marginBottom: '1rem' }}>speed</span>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Our Mission</h3>
             <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>To provide the fastest, most reliable delivery network connecting vendors to consumers within minutes, not days.</p>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)' }}>
             <span className="material-symbols-outlined" style={{ fontSize: '2.5rem', color: '#3b82f6', marginBottom: '1rem' }}>verified_user</span>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Our Vision</h3>
             <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>To be the undisputed backbone of local e-commerce and personal logistics in West Africa, driven by technology.</p>

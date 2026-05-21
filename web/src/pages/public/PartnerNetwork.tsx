@@ -35,7 +35,7 @@ const PartnerNetwork: React.FC = () => {
         
         <motion.div variants={fadeInUp} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
           {partners.map((p, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '150px' }}>
+            <div key={i} style={{ background: 'var(--glass-bg)', padding: '2rem', borderRadius: '1.5rem', border: '1px solid var(--border-color)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '150px' }}>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: '0 0 0.5rem 0' }}>{p.name}</h3>
               <span style={{ fontSize: '0.8rem', color: 'var(--primary-light)', background: 'rgba(160, 32, 240, 0.1)', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontWeight: 600 }}>{p.type}</span>
             </div>
