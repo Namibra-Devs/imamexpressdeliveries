@@ -228,7 +228,7 @@ const Register: React.FC = () => {
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button type="button" onClick={prevStep} style={{ background: 'transparent', color: 'var(--primary)', border: 'none', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                <button type="button" onClick={prevStep} disabled={loading} style={{ background: 'transparent', color: 'var(--primary)', border: 'none', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1, fontFamily: 'inherit' }}>
                   Back
                 </button>
                 <button type="submit" style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '2rem', padding: '0.6rem 1.5rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, fontFamily: 'inherit' }} disabled={loading}>
