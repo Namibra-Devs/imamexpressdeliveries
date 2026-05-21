@@ -31,3 +31,22 @@ export const subscribeNewsletter = async (req: ExpressRequest, res: ExpressRespo
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+export const submitContactForm = async (req: ExpressRequest, res: ExpressResponse): Promise<void> => {
+  try {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      res.status(400).json({ success: false, message: 'Name, email, and message are required' });
+      return;
+    }
+
+    await prisma.contactMessage.create({
+      data: { name, email, message },
+    });
+
+    res.status(201).json({ success: true, message: 'Message sent successfully' });
+  } catch (error: any) {
+    console.error('Error submitting contact form:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};

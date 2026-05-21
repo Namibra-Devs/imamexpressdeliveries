@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Contact: React.FC = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await axios.post('http://localhost:5000/api/public/contact', formData);
+      toast.success('Message sent successfully! We will get back to you soon.');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to send message. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
   const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -48,26 +71,47 @@ const Contact: React.FC = () => {
           </motion.div>
 
           <motion.div variants={fadeInUp}>
-            <form style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)' }}>
+            <form onSubmit={handleSubmit} style={{ background: 'var(--glass-bg)', padding: '2.5rem', borderRadius: '2rem', border: '1px solid var(--border-color)' }}>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem' }}>Send a Message</h3>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Full Name</label>
-                <input type="text" style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} placeholder="Hamza Ibrahim" />
+                <input 
+                  type="text" 
+                  style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} 
+                  placeholder="Hamza Ibrahim" 
+                  value={formData.name}
+                  onChange={e => setFormData({...formData, name: e.target.value})}
+                  required
+                />
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Email Address</label>
-                <input type="email" style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} placeholder="hamza@example.com" />
+                <input 
+                  type="email" 
+                  style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none' }} 
+                  placeholder="hamza@example.com" 
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                  required
+                />
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Message</label>
-                <textarea rows={4} style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none', resize: 'none' }} placeholder="How can we help?"></textarea>
+                <textarea 
+                  rows={4} 
+                  style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', color: 'var(--text-main)', outline: 'none', resize: 'none' }} 
+                  placeholder="How can we help?"
+                  value={formData.message}
+                  onChange={e => setFormData({...formData, message: e.target.value})}
+                  required
+                ></textarea>
               </div>
 
-              <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '1rem', fontWeight: 700 }}>
-                Submit Message
+              <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '1rem', fontWeight: 700, opacity: loading ? 0.7 : 1 }}>
+                {loading ? 'Sending...' : 'Submit Message'}
               </button>
             </form>
           </motion.div>

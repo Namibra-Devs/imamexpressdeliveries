@@ -161,3 +161,35 @@ export const toggleCustomerSuspension = async (req: AuthRequest, res: Response):
     res.status(500).json({ message: 'Error toggling customer suspension', error: error.message });
   }
 };
+
+export const getContactMessages = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const messages = await prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' } });
+    res.json({ messages });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error fetching contact messages', error: error.message });
+  }
+};
+
+export const markContactMessageRead = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const id = req.params.id as string;
+    const message = await prisma.contactMessage.update({
+      where: { id },
+      data: { isRead: true }
+    });
+    res.json({ message: 'Message marked as read', contactMessage: message });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating contact message', error: error.message });
+  }
+};
+
+export const deleteContactMessage = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const id = req.params.id as string;
+    await prisma.contactMessage.delete({ where: { id } });
+    res.json({ message: 'Message deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error deleting contact message', error: error.message });
+  }
+};

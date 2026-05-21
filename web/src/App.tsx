@@ -19,6 +19,7 @@ import RidersManagement from './pages/admin/RidersManagement';
 import Analytics from './pages/admin/Analytics';
 import Help from './pages/admin/Help';
 import Settings from './pages/admin/Settings';
+import ContactManagement from './pages/admin/ContactManagement';
 import AssignedDeliveries from './pages/rider/AssignedDeliveries';
 import DashboardRider from './pages/rider/Dashboard';
 import EarningsRider from './pages/rider/Earnings';
@@ -126,6 +127,7 @@ const App: React.FC = () => {
         <Route path="customers" element={<Customers />} />
         <Route path="riders" element={<RidersManagement />} />
         <Route path="analytics" element={<Analytics />} />
+        <Route path="contacts" element={<ContactManagement />} />
         <Route path="help" element={<Help />} />
         <Route path="settings" element={<Settings />} />
       </Route>
