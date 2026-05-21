@@ -2,21 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useLoadScript, GoogleMap, Marker, Autocomplete } from '@react-google-maps/api';
-import AppLayout from '../../components/AppLayout';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%'
-};
-
-const defaultCenter = { lat: 5.6037, lng: -0.1870 }; // Accra default
-
-const mapOptions = {
-  styles: [{ elementType: "geometry", stylers: [{ color: "#f5f5f5" }] }, { elementType: "labels.icon", stylers: [{ visibility: "off" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] }, { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#bdbdbd" }] }, { featureType: "poi", elementType: "geometry", stylers: [{ color: "#eeeeee" }] }, { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] }, { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] }, { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] }, { featureType: "road.arterial", elementType: "labels.text.fill", stylers: [{ color: "#757575" }] }, { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] }, { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#616161" }] }, { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }, { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#e5e5e5" }] }, { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#eeeeee" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9c9c9" }] }, { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }],
-  disableDefaultUI: true,
-  zoomControl: true,
-};
+import { useLoadScript, Autocomplete } from '@react-google-maps/api';
+import AuthLayout from '../../components/AuthLayout';
+import logo from '../../assets/logo.png';
 
 const Register: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -31,7 +19,6 @@ const Register: React.FC = () => {
     role: 'CUSTOMER'
   });
   const [loading, setLoading] = useState(false);
-  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [locationName, setLocationName] = useState<string>('Detecting location...');
   const [homeAutocomplete, setHomeAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
   const [workAutocomplete, setWorkAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
@@ -43,35 +30,26 @@ const Register: React.FC = () => {
   });
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && isLoaded) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+          const geocoder = new google.maps.Geocoder();
+          const userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+          geocoder.geocode({ location: userLocation }, (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+              const addressComponents = results[0].address_components;
+              const city = addressComponents.find(c => c.types.includes('locality'))?.long_name ||
+                addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
+              setLocationName(city || 'Unknown Location');
+            }
           });
         },
         () => {
-          console.log("Error getting location, using default");
           setLocationName('Accra, Ghana');
         }
       );
     }
-  }, []);
-
-  useEffect(() => {
-    if (userLocation && isLoaded) {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: userLocation }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
-          const addressComponents = results[0].address_components;
-          const city = addressComponents.find(c => c.types.includes('locality'))?.long_name ||
-            addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.long_name;
-          setLocationName(city || 'Unknown Location');
-        }
-      });
-    }
-  }, [userLocation, isLoaded]);
+  }, [isLoaded]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -97,7 +75,7 @@ const Register: React.FC = () => {
 
   const nextStep = () => {
     if (step === 1) {
-      if (!formData.name || !formData.email) {
+      if (!formData.name || !formData.email || !formData.phone) {
         toast.error('Please fill required fields');
         return;
       }
@@ -126,145 +104,123 @@ const Register: React.FC = () => {
     }
   };
 
-  const leftContent = (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 className="text-gradient" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Create Account</h2>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+  return (
+    <AuthLayout locationName={locationName}>
+      {/* Left Column: Branding / Title */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingTop: '1rem' }}>
+        <img src={logo} alt="Imam Express" style={{ width: '56px', height: '56px', marginBottom: '1.5rem', borderRadius: '12px', objectFit: 'cover', boxShadow: '0 4px 12px rgba(160,32,240,0.2)' }} />
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 500, margin: '0 0 0.5rem 0', color: 'var(--text-main)', letterSpacing: '-0.02em' }}>Create Account</h1>
+        <p style={{ fontSize: '1rem', color: 'var(--text-main)', margin: 0, marginBottom: '2rem' }}>Join the Imam Express network</p>
+        
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
           {[1, 2, 3].map((s) => (
             <div key={s} style={{
               width: '40px',
               height: '4px',
               borderRadius: '2px',
-              background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)'
+              background: s <= step ? 'var(--primary)' : 'var(--border-color)',
+              transition: 'background 0.3s ease'
             }} />
           ))}
         </div>
-        <p className="text-muted">Step {step} of 3</p>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Step {step} of 3</p>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        {step === 1 && (
-          <div className="step-content animate-in">
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Full Name</label>
-              <input type="text" className="input-field" name="name" placeholder="Hamza Ali" value={formData.name} onChange={handleChange} required />
+      {/* Right Column: Form */}
+      <div style={{ flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+          
+          {step === 1 && (
+            <div className="animate-in" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="google-input-group">
+                <input type="text" className="google-input" name="name" placeholder=" " value={formData.name} onChange={handleChange} required />
+                <label className="google-input-label">Full Name</label>
+              </div>
+              <div className="google-input-group">
+                <input type="text" className="google-input" name="phone" placeholder=" " value={formData.phone} onChange={handleChange} required />
+                <label className="google-input-label">Phone Number</label>
+              </div>
+              <div className="google-input-group" style={{ marginBottom: '2.5rem' }}>
+                <input type="email" className="google-input" name="email" placeholder=" " value={formData.email} onChange={handleChange} required />
+                <label className="google-input-label">Email Address</label>
+              </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>Sign in instead</Link>
+                <button type="button" onClick={nextStep} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '2rem', padding: '0.6rem 1.5rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Next
+                </button>
+              </div>
             </div>
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Phone Number</label>
-              <input type="text" className="input-field" name="phone" placeholder="+1234567890" value={formData.phone} onChange={handleChange} required />
-            </div>
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Email Address</label>
-              <input type="email" className="input-field" name="email" placeholder="hamza@example.com" value={formData.email} onChange={handleChange} required />
-            </div>
-            <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', borderRadius: '2rem', padding: '1.1rem' }} onClick={nextStep}>
-              Continue to Step 2
-            </button>
-          </div>
-        )}
+          )}
 
-        {step === 2 && (
-          <div className="step-content animate-in">
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Home Address (Optional)</label>
-              {isLoaded ? (
-                <Autocomplete onLoad={setHomeAutocomplete} onPlaceChanged={onHomePlaceChanged}>
-                  <input type="text" className="input-field" name="homeAddress" placeholder="123 Street Name, City" value={formData.homeAddress} onChange={handleChange} />
-                </Autocomplete>
-              ) : (
-                <input type="text" className="input-field" placeholder="Loading autocomplete..." disabled />
-              )}
+          {step === 2 && (
+            <div className="animate-in" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="google-input-group">
+                {isLoaded ? (
+                  <Autocomplete onLoad={setHomeAutocomplete} onPlaceChanged={onHomePlaceChanged}>
+                    <input type="text" className="google-input" name="homeAddress" placeholder=" " value={formData.homeAddress} onChange={handleChange} />
+                  </Autocomplete>
+                ) : (
+                  <input type="text" className="google-input" placeholder="Loading autocomplete..." disabled />
+                )}
+                <label className="google-input-label">Home Address (Optional)</label>
+              </div>
+              <div className="google-input-group">
+                {isLoaded ? (
+                  <Autocomplete onLoad={setWorkAutocomplete} onPlaceChanged={onWorkPlaceChanged}>
+                    <input type="text" className="google-input" name="workAddress" placeholder=" " value={formData.workAddress} onChange={handleChange} />
+                  </Autocomplete>
+                ) : (
+                  <input type="text" className="google-input" placeholder="Loading autocomplete..." disabled />
+                )}
+                <label className="google-input-label">Work Address (Optional)</label>
+              </div>
+              <div className="google-input-group" style={{ marginBottom: '2.5rem' }}>
+                <select className="google-input" name="role" value={formData.role} onChange={handleChange}>
+                  <option value="CUSTOMER">Customer</option>
+                  <option value="RIDER">Rider</option>
+                </select>
+                <label className="google-input-label">Account Type</label>
+              </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button type="button" onClick={prevStep} style={{ background: 'transparent', color: 'var(--primary)', border: 'none', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Back
+                </button>
+                <button type="button" onClick={nextStep} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '2rem', padding: '0.6rem 1.5rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Next
+                </button>
+              </div>
             </div>
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Work Address (Optional)</label>
-              {isLoaded ? (
-                <Autocomplete onLoad={setWorkAutocomplete} onPlaceChanged={onWorkPlaceChanged}>
-                  <input type="text" className="input-field" name="workAddress" placeholder="Office Complex, City" value={formData.workAddress} onChange={handleChange} />
-                </Autocomplete>
-              ) : (
-                <input type="text" className="input-field" placeholder="Loading autocomplete..." disabled />
-              )}
-            </div>
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Account Type</label>
-              <select className="input-field" name="role" value={formData.role} onChange={handleChange}>
-                <option value="CUSTOMER">Customer</option>
-                <option value="RIDER">Rider</option>
-              </select>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button type="button" className="btn btn-secondary" style={{ flex: 1, borderRadius: '2rem', padding: '1.1rem' }} onClick={prevStep}>
-                Back
-              </button>
-              <button type="button" className="btn btn-primary" style={{ flex: 2, borderRadius: '2rem', padding: '1.1rem' }} onClick={nextStep}>
-                Continue to Step 3
-              </button>
-            </div>
-          </div>
-        )}
+          )}
 
-        {step === 3 && (
-          <div className="step-content animate-in">
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Password</label>
-              <input type="password" className="input-field" name="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
+          {step === 3 && (
+            <div className="animate-in" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="google-input-group">
+                <input type="password" className="google-input" name="password" placeholder=" " value={formData.password} onChange={handleChange} required />
+                <label className="google-input-label">Password</label>
+              </div>
+              <div className="google-input-group" style={{ marginBottom: '2.5rem' }}>
+                <input type="password" className="google-input" name="confirmPassword" placeholder=" " value={formData.confirmPassword} onChange={handleChange} required />
+                <label className="google-input-label">Confirm Password</label>
+              </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button type="button" onClick={prevStep} style={{ background: 'transparent', color: 'var(--primary)', border: 'none', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Back
+                </button>
+                <button type="submit" style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '2rem', padding: '0.6rem 1.5rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, fontFamily: 'inherit' }} disabled={loading}>
+                  {loading ? 'Creating...' : 'Register'}
+                </button>
+              </div>
             </div>
-            <div className="input-group">
-              <label className="input-label" style={{ color: '#fff' }}>Confirm Password</label>
-              <input type="password" className="input-field" name="confirmPassword" placeholder="••••••••" value={formData.confirmPassword} onChange={handleChange} required />
-            </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button type="button" className="btn btn-secondary" style={{ flex: 1, borderRadius: '2rem', padding: '1.1rem' }} onClick={prevStep}>
-                Back
-              </button>
-              <button type="submit" className="btn btn-primary" style={{ flex: 2, borderRadius: '2rem', padding: '1.1rem' }} disabled={loading}>
-                {loading ? 'Creating Account...' : 'Complete Registration'}
-              </button>
-            </div>
-          </div>
-        )}
-      </form>
+          )}
 
-      <p className="text-muted" style={{ marginTop: '2rem', fontSize: '0.9rem', textAlign: 'center' }}>
-        Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700 }}>Sign in</Link>
-      </p>
-
-      {/* Location Status Indicator */}
-      <div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ background: '#3d1c36', padding: '0.5rem 1.25rem', borderRadius: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', border: '1px solid rgba(160, 32, 240, 0.15)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: 'var(--primary)' }}>location_on</span>
-          </div>
-          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Live from {locationName}
-          </span>
-          <div style={{ width: '6px', height: '6px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></div>
-        </div>
+        </form>
       </div>
-    </div>
+    </AuthLayout>
   );
-
-  const rightContent = (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={userLocation || defaultCenter}
-          zoom={14}
-          options={mapOptions}
-        >
-          {userLocation && <Marker position={userLocation} />}
-        </GoogleMap>
-      ) : (
-        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' }}>
-          Loading Map...
-        </div>
-      )}
-    </div>
-  );
-
-  return <AppLayout leftContent={leftContent} rightContent={rightContent} />;
 };
 
 export default Register;
