@@ -43,7 +43,7 @@ const AssignedDeliveries: React.FC = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/rider/my-deliveries', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/rider/my-deliveries`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(res.data.orders);
@@ -58,7 +58,7 @@ const AssignedDeliveries: React.FC = () => {
     setUpdating(true);
     setPinError('');
     try {
-      await axios.patch(`http://localhost:5000/api/rider/orders/${orderId}/status`, 
+      await axios.patch(`${import.meta.env.VITE_API_URL}/api/rider/orders/${orderId}/status`, 
         { status: newStatus, pin },
         { headers: { Authorization: `Bearer ${token}` } }
       );

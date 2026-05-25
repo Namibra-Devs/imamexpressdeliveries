@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
 
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/profile', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const { name, email, phone, profileImage, homeAddress, workAddress } = res.data.user;
@@ -133,7 +133,7 @@ const Profile: React.FC = () => {
       const formPayload = new FormData();
       formPayload.append('profileImage', file);
       
-      const uploadPromise = axios.post('http://localhost:5000/api/user/upload-profile-image', 
+      const uploadPromise = axios.post(`${import.meta.env.VITE_API_URL}/api/user/upload-profile-image`, 
         formPayload, 
         { headers: { 
             Authorization: `Bearer ${token}`,
@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
     setSaving(true);
 
     try {
-      const updatePromise = axios.put('http://localhost:5000/api/user/profile', formData, {
+      const updatePromise = axios.put(`${import.meta.env.VITE_API_URL}/api/user/profile`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -217,7 +217,7 @@ const Profile: React.FC = () => {
             <div style={{ 
               width: '100px', 
               height: '100px', 
-              background: formData.profileImage ? `url(${formData.profileImage.startsWith('data:') || formData.profileImage.startsWith('http') ? formData.profileImage : `http://localhost:5000${formData.profileImage}`}) center/cover` : 'var(--primary)', 
+              background: formData.profileImage ? `url(${formData.profileImage.startsWith('data:') || formData.profileImage.startsWith('http') ? formData.profileImage : `${import.meta.env.VITE_API_URL}${formData.profileImage}`}) center/cover` : 'var(--primary)', 
               borderRadius: '50%', 
               display: 'flex', 
               alignItems: 'center', 

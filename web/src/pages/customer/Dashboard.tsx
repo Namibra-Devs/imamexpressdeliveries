@@ -29,13 +29,13 @@ const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch Orders
-        const ordersRes = await axios.get('http://localhost:5000/api/orders/my-orders', {
+        const ordersRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/my-orders`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setOrders(ordersRes.data.orders);
 
         // Fetch Profile for addresses
-        const profileRes = await axios.get('http://localhost:5000/api/user/profile', {
+        const profileRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile({
@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
         <div style={{
           width: '54px',
           height: '54px',
-          background: user?.profileImage ? `url(${user.profileImage.startsWith('data:') || user.profileImage.startsWith('http') ? user.profileImage : `http://localhost:5000${user.profileImage}`}) center/cover` : 'var(--primary)',
+          background: user?.profileImage ? `url(${user.profileImage.startsWith('data:') || user.profileImage.startsWith('http') ? user.profileImage : `${import.meta.env.VITE_API_URL}${user.profileImage}`}) center/cover` : 'var(--primary)',
           borderRadius: '50%',
           border: '2px solid var(--primary)',
           display: 'flex',

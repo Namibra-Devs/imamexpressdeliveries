@@ -63,8 +63,8 @@ const FleetMonitoring: React.FC = () => {
     const fetchFleetData = async () => {
       try {
         const [ordersRes, ridersRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/orders', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:5000/api/admin/riders', { headers: { Authorization: `Bearer ${token}` } })
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/riders`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
         
         const activeOrders = ordersRes.data.orders.filter((o: Order) => o.status === 'PICKED_UP' || o.status === 'ASSIGNED');

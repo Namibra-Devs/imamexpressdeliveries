@@ -72,10 +72,10 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const metricsRes = await axios.get('http://localhost:5000/api/admin/dashboard', {
+        const metricsRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const ordersRes = await axios.get('http://localhost:5000/api/admin/orders', {
+        const ordersRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         

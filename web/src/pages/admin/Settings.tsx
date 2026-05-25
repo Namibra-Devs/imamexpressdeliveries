@@ -34,10 +34,10 @@ const Settings: React.FC = () => {
     const fetchData = async () => {
       try {
         const [pricingRes, statusRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/pricing', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/pricing`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5000/api/admin/system-status', {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/system-status`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -58,7 +58,7 @@ const Settings: React.FC = () => {
     e.preventDefault();
     setSaving(true);
     try {
-      await axios.patch('http://localhost:5000/api/admin/pricing', pricing, {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/pricing`, pricing, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Pricing model updated successfully');

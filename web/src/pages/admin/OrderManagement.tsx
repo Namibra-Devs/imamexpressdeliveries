@@ -125,8 +125,8 @@ const OrderManagement: React.FC = () => {
   const fetchData = async () => {
     try {
       const [ordersRes, ridersRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/orders', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/admin/riders', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/riders`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setOrders(ordersRes.data.orders);
       setRiders(ridersRes.data.riders);
@@ -142,7 +142,7 @@ const OrderManagement: React.FC = () => {
     if (!riderId) return;
     setAssigning(true);
     try {
-      await axios.post('http://localhost:5000/api/admin/orders/assign',
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/orders/assign`,
         { orderId, riderId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

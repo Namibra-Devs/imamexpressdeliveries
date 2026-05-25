@@ -46,7 +46,7 @@ const VerifyEmail: React.FC = () => {
       }
 
       try {
-        await axios.get(`http://localhost:5000/api/auth/verify-email?token=${token}`);
+        await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/verify-email?token=${token}`);
         setStatus('success');
         toast.success('Email verified successfully!');
       } catch (error: any) {

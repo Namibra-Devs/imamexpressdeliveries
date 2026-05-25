@@ -25,7 +25,7 @@ const AdminProfile: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/profile', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const { name, email, phone, profileImage } = res.data.user;
@@ -61,7 +61,7 @@ const AdminProfile: React.FC = () => {
 
         setSaving(true);
         try {
-          const res = await axios.put('http://localhost:5000/api/user/profile',
+          const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/user/profile`,
             { ...formData, profileImage: base64 },
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -88,7 +88,7 @@ const AdminProfile: React.FC = () => {
 
     setChangingPassword(true);
     try {
-      await axios.put('http://localhost:5000/api/user/change-password', {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/user/change-password`, {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       }, {
@@ -108,7 +108,7 @@ const AdminProfile: React.FC = () => {
     setSaving(true);
 
     try {
-      const res = await axios.put('http://localhost:5000/api/user/profile', formData, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/user/profile`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (authUser) {

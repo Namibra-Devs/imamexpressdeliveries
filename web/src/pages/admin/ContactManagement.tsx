@@ -19,7 +19,7 @@ const ContactManagement: React.FC = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/contacts', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/contacts`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(res.data.messages);
@@ -36,7 +36,7 @@ const ContactManagement: React.FC = () => {
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/contacts/${id}/read`, {}, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/contacts/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Message marked as read');
@@ -49,7 +49,7 @@ const ContactManagement: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this message?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/contacts/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/contacts/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Message deleted');

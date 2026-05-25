@@ -140,7 +140,7 @@ const ActiveRouteMap: React.FC = () => {
     setUpdating(true);
     setPinError('');
     try {
-      await axios.patch(`http://localhost:5000/api/rider/orders/${currentOrder.id}/status`,
+      await axios.patch(`${import.meta.env.VITE_API_URL}/api/rider/orders/${currentOrder.id}/status`,
         { status: newStatus, pin },
         { headers: { Authorization: `Bearer ${token}` } }
       );

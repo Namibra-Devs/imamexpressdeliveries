@@ -15,7 +15,7 @@ const PublicFooter: React.FC = () => {
     }
     try {
       setIsSubscribing(true);
-      const res = await axios.post('http://localhost:5000/api/public/newsletter', { email: newsletterEmail });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/public/newsletter`, { email: newsletterEmail });
       toast.success(res.data.message || 'Subscribed successfully!');
       setNewsletterEmail('');
     } catch (err: any) {

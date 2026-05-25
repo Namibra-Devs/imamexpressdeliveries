@@ -10,7 +10,7 @@ const EarningsRider: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/rider/dashboard-stats', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/rider/dashboard-stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(res.data);

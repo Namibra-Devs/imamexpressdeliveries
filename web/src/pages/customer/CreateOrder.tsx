@@ -104,7 +104,7 @@ const CreateOrder: React.FC = () => {
     const fetchEstimate = async () => {
       if (formData.pickupLocation && formData.dropoffLocation) {
         try {
-          const res = await axios.post('http://localhost:5000/api/orders/estimate', {
+          const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/orders/estimate`, {
             pickupLocation: formData.pickupLocation,
             dropoffLocation: formData.dropoffLocation,
             packageType: formData.packageType
@@ -137,7 +137,7 @@ const CreateOrder: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/profile', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedAddresses({
@@ -201,7 +201,7 @@ const CreateOrder: React.FC = () => {
         packageDescription: `${formData.packageType.toUpperCase()}: ${formData.packageDescription}`
       };
 
-      const orderPromise = axios.post('http://localhost:5000/api/orders', payload, {
+      const orderPromise = axios.post(`${import.meta.env.VITE_API_URL}/api/orders`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

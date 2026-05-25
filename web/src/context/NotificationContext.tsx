@@ -70,7 +70,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     const checkOrderStatusUpdates = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/orders/my-orders', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/my-orders`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const orders = res.data.orders || [];

@@ -70,7 +70,7 @@ const Customers: React.FC = () => {
 
   const handleToggleSuspend = async (id: string) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/admin/customers/${id}/suspend`, {}, {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/customers/${id}/suspend`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCustomers(customers.map(c => c.id === id ? { ...c, isSuspended: res.data.customer.isSuspended } : c));
@@ -87,8 +87,8 @@ const Customers: React.FC = () => {
     const fetchData = async () => {
       try {
         const [custRes, orderRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/customers', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:5000/api/admin/orders', { headers: { Authorization: `Bearer ${token}` } })
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/customers`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
         setCustomers(custRes.data.customers);
         setOrders(orderRes.data.orders);

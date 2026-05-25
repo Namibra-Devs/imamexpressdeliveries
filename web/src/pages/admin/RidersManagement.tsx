@@ -70,8 +70,8 @@ const RidersManagement: React.FC = () => {
   const fetchData = async () => {
     try {
       const [ridersRes, ordersRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/riders', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:5000/api/admin/orders', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/riders`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setRiders(ridersRes.data.riders);
       setOrders(ordersRes.data.orders);
@@ -87,7 +87,7 @@ const RidersManagement: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         ...onboardData,
         role: 'RIDER'
       });
